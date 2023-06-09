@@ -8,7 +8,7 @@ export default function RootLayout({ children, session }) {
         <title>Shape It!</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
-      <body className="flex min-h-full flex-row bg-white dark:bg-gray-950">
+      <body className="flex min-h-full flex-row bg-white">
         {children}
       </body>
     </html>
