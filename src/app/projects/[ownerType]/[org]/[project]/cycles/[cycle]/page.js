@@ -1,6 +1,6 @@
 import { graphql } from '@octokit/graphql'
 import { getServerSession } from 'next-auth'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import CyclePage from '@/components/CyclePage'
 import colors from '@/components/colors'
@@ -35,11 +35,34 @@ export default async function ProjectCyclePage({ params }) {
 
 export async function prepareData(params) {
   const session = await getServerSession(authOptions)
-  if (!session) return redirect('/')
-
-  let responseData
+  const isLoggedIn = !!session
 
   const userOrOrganization = params.ownerType === 'org' ? 'organization' : 'user'
+
+  if (!isLoggedIn) {
+    const data = await graphql(
+      `query($owner: String!, $projectNumber: Int!) { 
+        ${userOrOrganization}(login: $owner) {
+          projectV2(number: $projectNumber) {
+            public
+          }
+        }
+      }`,
+      {
+        owner: params.org,
+        projectNumber: Number(params.project),
+        headers: {
+          authorization: `token ${process.env.GITHUB_TOKEN}`
+        }
+      }
+    )
+
+    if (!data?.[userOrOrganization]?.projectV2?.public) {
+      return notFound()
+    }
+  }
+
+  let responseData
   
   try {
     responseData = await graphql(
@@ -65,6 +88,9 @@ export async function prepareData(params) {
                     closed
                     closedAt
                     createdAt
+                    repository {
+                      isPrivate
+                    }
                     author {
                       login
                       avatarUrl
@@ -119,6 +145,9 @@ export async function prepareData(params) {
                     closed
                     closedAt
                     createdAt
+                    repository {
+                      isPrivate
+                    }
                     author {
                       login
                       avatarUrl
@@ -216,16 +245,14 @@ export async function prepareData(params) {
         owner: params.org,
         projectNumber: Number(params.project),
         headers: {
-          authorization: `token ${session?.accessToken}`
+          authorization: `token ${isLoggedIn ? session?.accessToken : process.env.GITHUB_TOKEN}`
         }
       }
     )
   } catch (e) {
     if (!e.data) {
       console.error(e)
-      return (
-        <div>There was an error trying to fetch GitHub data.</div>
-      )
+      throw e
     }
 
     responseData = e.data
@@ -234,6 +261,11 @@ export async function prepareData(params) {
   const projectData = responseData[userOrOrganization].projectV2.items.nodes
   let cycles = []
   const issues = projectData.map(item => {
+    const isPrivate = item?.content?.repository?.isPrivate === undefined
+                      || item?.content?.repository?.isPrivate === true
+
+    if (!isLoggedIn && isPrivate) return null
+
     let cycleNode = item.fieldValues.nodes.find(fv => fv.field?.name === 'Cycle')
     if (!cycleNode) return
 
