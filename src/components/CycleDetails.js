@@ -18,7 +18,7 @@ export default function CycleDetails({ selectedScopes, history }) {
       </h3>
       <div>
         {
-          history.map((statusUpdate, index) => (
+          history.length > 0 && history.map((statusUpdate, index) => (
             <HistoryStatusUpdate key={index} statusUpdate={statusUpdate} className="mt-4" />
           ))
         }

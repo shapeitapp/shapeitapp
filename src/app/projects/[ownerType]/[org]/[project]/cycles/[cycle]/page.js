@@ -77,6 +77,7 @@ export async function prepareData(params) {
                   ...on DraftIssue {
                     id
                     title
+                    body
                     author:creator {
                       login
                       avatarUrl
@@ -85,6 +86,7 @@ export async function prepareData(params) {
                   ...on Issue {
                     id
                     title
+                    body
                     url
                     number
                     closed
@@ -173,6 +175,7 @@ export async function prepareData(params) {
                 ... on Issue {
                   id
                   title
+                  body
                   trackedIssues(first:100) {
                     nodes {
                       id
@@ -273,21 +276,39 @@ export async function prepareData(params) {
     }
 
     const kind = item.fieldValues.nodes.find(fv => fv.field?.name === 'Kind')?.name
-    const scopes = scopeData[item?.content?.id]
+    let scopes = scopeData[item?.content?.id] ? scopeData[item?.content?.id] : []
     const history = getHistory(item.content)
 
-    if (scopes) {
-      for (let [scopeIndex, scope] of scopes.entries()) {
-        scope.history = getHistory(scope)
-        scope.bet = item.content.url
-        scope.progress = {
-          percentage: scope.closed === true ? 100 : getCurrentPercentage(scope.comments.nodes.map(node => node.bodyText)),
-          history: scope.history,
-          notPlanned: getLatestCloseState(history) === 'NOT_PLANNED',
-          completed: getLatestCloseState(history) === 'COMPLETED',
-          closed: scope.closed === true
+    if (kind === 'Bet') {
+      if (scopes.length > 0) {
+        for (let [scopeIndex, scope] of scopes.entries()) {
+          scope.history = getHistory(scope)
+          scope.bet = item.content.url
+          scope.progress = {
+            percentage: scope.closed === true ? 100 : getCurrentPercentage(scope.comments.nodes.map(node => node.bodyText)),
+            history: scope.history,
+            notPlanned: getLatestCloseState(history) === 'NOT_PLANNED',
+            completed: getLatestCloseState(history) === 'COMPLETED',
+            closed: scope.closed === true
+          }
+          scope.color = colors[scopeIndex % colors.length]
         }
-        scope.color = colors[scopeIndex % colors.length]
+      } else {
+        // If scopes are not available, try with tasks
+        const extractedScope = extractTasks(item.content.body)
+        for (let [scopeIndex, scope] of extractedScope.entries()) {
+          scope.history = null;
+          scope.bet = item.content.url
+          scope.progress = {
+            percentage: scope.closed === true ? 100 : 0,
+            history: null,
+            notPlanned: false,
+            completed: scope.closed === true,
+            closed: scope.closed === true
+          },
+          scope.color = colors[scopeIndex % colors.length]
+        }
+        scopes = [...extractedScope];
       }
     }
     return {
@@ -310,7 +331,7 @@ export async function prepareData(params) {
   })
   const pitches = issues.filter(issue => issue.kind === 'Pitch')
   const bets = issues.filter(issue => issue.kind === 'Bet')
-
+  //console.log(`bets`, bets);
   function getVisibleCycleDetails(id) {
     let inCycle = false
     let cycle
@@ -451,4 +472,25 @@ function getHistoryPoint(commentObject) {
     author: commentObject.author,
     url: commentObject.url,
   }
+}
+
+function extractTasks(text) {
+  const tasks = []
+  const scopeRegex = /## Scope([\s\S]*?)(?=\n## \w|\n$)/
+  const taskRegex = /- \[(x| )\] (.+)/g
+
+  const scopeMatch = text.match(scopeRegex)
+  if (scopeMatch) {
+    const scopeText = scopeMatch[1]
+    let match
+    while ((match = taskRegex.exec(scopeText)) !== null) {
+      const task = {
+        title: match[2],
+        progress: match[1] === "x" ? "100%" : "0%"
+      };
+      tasks.push(task)
+    }
+  }
+
+  return tasks;
 }
