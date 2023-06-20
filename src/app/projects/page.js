@@ -40,11 +40,6 @@ export default async function Projects() {
                   }
                 }
               }
-              bet: field(name: "Bet") {
-                ... on ProjectV2FieldCommon {
-                  dataType
-                }
-              }
               appetite: field(name: "Appetite") {
                 ... on ProjectV2SingleSelectField {
                   dataType
@@ -80,11 +75,6 @@ export default async function Projects() {
                       options {
                         name
                       }
-                    }
-                  }
-                  bet: field(name: "Bet") {
-                    ... on ProjectV2FieldCommon {
-                      dataType
                     }
                   }
                   appetite: field(name: "Appetite") {

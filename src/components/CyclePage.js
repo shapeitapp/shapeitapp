@@ -8,11 +8,11 @@ import CycleSidebar from './CycleSidebar'
 
 export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCycle, availablePitches = [], availableBets = [], availableScopes = [] }) {
   const [visibleBet, setVisibleBet] = useState(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
-  const [visibleScopes, setVisibleScopes] = useState(availableScopes.filter(scope => belongsToBet(visibleBet, scope)))
+  const [visibleScopes, setVisibleScopes] = useState(visibleBet?.scopes)
   const [selectedScopes, setSelectedScopes] = useState(visibleScopes)
 
   useEffect(() => {
-    const allBetScopes = availableScopes.filter(scope => belongsToBet(visibleBet, scope))
+    const allBetScopes = visibleBet?.scopes
     setVisibleScopes(allBetScopes)
     setSelectedScopes(allBetScopes)
   }, [visibleBet])
