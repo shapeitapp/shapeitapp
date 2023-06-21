@@ -63,7 +63,7 @@ export async function prepareData(params) {
   }
 
   let responseData
-  
+  let scopeData = {}
   try {
     responseData = await graphql(
       `query($owner: String!, $projectNumber: Int!) {
@@ -75,14 +75,18 @@ export async function prepareData(params) {
               nodes {
                 content {
                   ...on DraftIssue {
+                    id
                     title
+                    body
                     author:creator {
                       login
                       avatarUrl
                     }
                   }
                   ...on Issue {
+                    id
                     title
+                    body
                     url
                     number
                     closed
@@ -90,110 +94,11 @@ export async function prepareData(params) {
                     createdAt
                     repository {
                       isPrivate
+                      name
                     }
                     author {
                       login
                       avatarUrl
-                    }
-                    comments(last: 100) {
-                      nodes {
-                        body
-                        bodyText
-                        createdAt
-                        updatedAt
-                        url
-                        author {
-                          avatarUrl(size: 100)
-                          ... on User {
-                            name
-                            url
-                          }
-                        }
-                      }
-                    }
-                    timelineItems(
-                      last: 100,
-                      itemTypes: CLOSED_EVENT
-                    ) {
-                      nodes {
-                        ... on ClosedEvent {
-                          url
-                          stateReason
-                          actor {
-                            avatarUrl(size: 100)
-                            ... on Actor {
-                              login
-                              url
-                            }
-                            ... on Bot {
-                              login
-                              url
-                            }
-                            ... on User {
-                              name
-                              url
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                  ...on PullRequest {
-                    title
-                    url
-                    number
-                    closed
-                    closedAt
-                    createdAt
-                    repository {
-                      isPrivate
-                    }
-                    author {
-                      login
-                      avatarUrl
-                    }
-                    comments(last: 100) {
-                      nodes {
-                        body
-                        bodyText
-                        createdAt
-                        updatedAt
-                        url
-                        author {
-                          avatarUrl(size: 100)
-                          ... on User {
-                            name
-                            url
-                          }
-                        }
-                      }
-                    }
-                    timelineItems(
-                      last: 100,
-                      itemTypes: CLOSED_EVENT
-                    ) {
-                      nodes {
-                        ... on ClosedEvent {
-                          __typename
-                          url
-                          stateReason
-                          actor {
-                            avatarUrl(size: 100)
-                            ... on Actor {
-                              login
-                              url
-                            }
-                            ... on Bot {
-                              login
-                              url
-                            }
-                            ... on User {
-                              name
-                              url
-                            }
-                          }
-                        }
-                      }
                     }
                   }
                 }
@@ -259,6 +164,94 @@ export async function prepareData(params) {
   }
 
   const projectData = responseData[userOrOrganization].projectV2.items.nodes
+  for (let i = 0; i < projectData.length; i++) {
+    let item = projectData[i];
+    if (item.fieldValues.nodes.find(fv => fv.field?.name === 'Kind')?.name === "Bet") {
+      let {id} = item.content
+      try {
+        let scopeItems = await graphql(
+          `query($nodeId: ID!){
+            node (id: $nodeId){
+                ... on Issue {
+                  id
+                  title
+                  body
+                  trackedIssues(first:100) {
+                    nodes {
+                      id
+                      title
+                      url
+                      closed
+                      closedAt
+                      createdAt
+                      comments(last: 100) {
+                          nodes {
+                            body
+                            bodyText
+                            createdAt
+                            updatedAt
+                            url
+                            author {
+                              avatarUrl(size: 100)
+                              ... on User {
+                                name
+                                url
+                              }
+                            }
+                          }
+                        }
+                      timelineItems(
+                          last: 100,
+                          itemTypes: CLOSED_EVENT
+                        ) {
+                          nodes {
+                            ... on ClosedEvent {
+                              __typename
+                              url
+                              stateReason
+                              actor {
+                                avatarUrl(size: 100)
+                                ... on Actor {
+                                  login
+                                  url
+                                }
+                                ... on Bot {
+                                  login
+                                  url
+                                }
+                                ... on User {
+                                  name
+                                  url
+                                }
+                              }
+                            }
+                          }
+                        }
+                    }
+                  }
+                }
+              }
+            }`,
+            {
+              nodeId: id,
+              headers: {
+                authorization: `token ${process.env.GITHUB_TOKEN}`
+              }
+            }
+        )
+        if (scopeItems.node.trackedIssues?.nodes) {
+          scopeData[item.content.id] = scopeItems.node.trackedIssues?.nodes
+        }
+      }
+      catch(e) {
+        console.log(e)
+        if (!e.data) {
+          console.error(e)
+          throw e
+        }
+      }
+    }
+  }
   let cycles = []
   const issues = projectData.map(item => {
     const isPrivate = item?.content?.repository?.isPrivate === undefined
@@ -283,8 +276,41 @@ export async function prepareData(params) {
     }
 
     const kind = item.fieldValues.nodes.find(fv => fv.field?.name === 'Kind')?.name
+    let scopes = scopeData[item?.content?.id] ? scopeData[item?.content?.id] : []
     const history = getHistory(item.content)
 
+    if (kind === 'Bet') {
+      if (scopes.length > 0) {
+        for (let [scopeIndex, scope] of scopes.entries()) {
+          scope.history = getHistory(scope)
+          scope.bet = item.content.url
+          scope.progress = {
+            percentage: scope.closed === true ? 100 : getCurrentPercentage(scope.comments.nodes.map(node => node.bodyText)),
+            history: scope.history,
+            notPlanned: getLatestCloseState(history) === 'NOT_PLANNED',
+            completed: getLatestCloseState(history) === 'COMPLETED',
+            closed: scope.closed === true
+          }
+          scope.color = colors[scopeIndex % colors.length]
+        }
+      } else {
+        // If scopes are not available, try with tasks
+        const extractedScope = extractTasks(item.content.body)
+        for (let [scopeIndex, scope] of extractedScope.entries()) {
+          scope.history = null;
+          scope.bet = item.content.url
+          scope.progress = {
+            percentage: scope.closed === true ? 100 : 0,
+            history: null,
+            notPlanned: false,
+            completed: scope.closed === true,
+            closed: scope.closed === true
+          },
+          scope.color = colors[scopeIndex % colors.length]
+        }
+        scopes = [...extractedScope];
+      }
+    }
     return {
       title: item.content.title,
       url: item.content.url,
@@ -293,17 +319,10 @@ export async function prepareData(params) {
       closedAt: item.content.closedAt,
       createdAt: item.content.createdAt,
       author: item.content.author,
-      bet: item.fieldValues.nodes.find(fv => fv.field?.name === 'Bet')?.text,
       kind,
       appetite: item.fieldValues.nodes.find(fv => fv.field?.name === 'Appetite')?.name,
       cycle: cycleNode.id,
-      progress: kind === 'Scope' ? {
-        percentage: item.content.closed === true ? 100 : getCurrentPercentage(item.content.comments.nodes.map(node => node.bodyText)),
-        history,
-        notPlanned: getLatestCloseState(history) === 'NOT_PLANNED',
-        completed: getLatestCloseState(history) === 'COMPLETED',
-        closed: item.content.closed === true,
-      } : undefined
+      scopes
     }
   }).filter(Boolean)
 
@@ -312,8 +331,6 @@ export async function prepareData(params) {
   })
   const pitches = issues.filter(issue => issue.kind === 'Pitch')
   const bets = issues.filter(issue => issue.kind === 'Bet')
-  const scopes = issues.filter(issue => issue.kind === 'Scope')
-
   function getVisibleCycleDetails(id) {
     let inCycle = false
     let cycle
@@ -360,10 +377,6 @@ export async function prepareData(params) {
   const availablePitches = pitches.filter(p => p.cycle === visibleCycle.id)
   const availableBets = bets.filter(b => b.cycle === visibleCycle.id)
   
-  const availableScopes = scopes.filter(s => s.cycle === cycle.id).map((scope, scopeIndex) => {
-    scope.color = colors[scopeIndex % colors.length] // If colorIndex is above colors.length, start over from the beginning
-    return scope
-  })
 
   return {
     project: {
@@ -379,11 +392,9 @@ export async function prepareData(params) {
     inCycle,
     availablePitches,
     availableBets,
-    availableScopes,
     cycles,
     bets,
-    pitches,
-    scopes,
+    pitches
   }
 }
 
@@ -460,4 +471,25 @@ function getHistoryPoint(commentObject) {
     author: commentObject.author,
     url: commentObject.url,
   }
+}
+
+function extractTasks(text) {
+  const tasks = []
+  const scopeRegex = /## Scope([\s\S]*?)(?=\n## \w|\n$)/
+  const taskRegex = /- \[(x| )\] (.+)/g
+
+  const scopeMatch = text.match(scopeRegex)
+  if (scopeMatch) {
+    const scopeText = scopeMatch[1]
+    let match
+    while ((match = taskRegex.exec(scopeText)) !== null) {
+      const task = {
+        title: match[2],
+        closed: match[1] === "x" ? true : false
+      };
+      tasks.push(task)
+    }
+  }
+
+  return tasks;
 }

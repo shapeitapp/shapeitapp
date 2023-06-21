@@ -5,7 +5,7 @@ import CycleHeader from './CycleHeader'
 
 export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle, pitches, selectedScopes, shouldShowPitches }) {
   const history = (selectedScopes || []).map(scope => {
-    return scope.progress.history.map(h => {
+    return scope.progress.history?.map(h => {
       return {
         progress: h,
         scope,
@@ -13,7 +13,7 @@ export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle,
     })
   }).flat().sort((h1, h2) => {
     return new Date(h2.progress.updatedAt) - new Date(h1.progress.updatedAt)
-  })
+  }).filter(Boolean)
 
   const isPastCycle = new Date(visibleCycle.endDate) < new Date()
 

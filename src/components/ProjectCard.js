@@ -14,9 +14,8 @@ export default function ProjectCard({ project }) {
   const hasKindField =
     project.kind?.dataType === 'SINGLE_SELECT' &&
     ['Pitch', 'Bet'].every(kind => !!project.kind?.options?.find(opt => opt.name === kind))
-  const hasBetField = project.bet?.dataType === 'TEXT'
   const hasAppetiteField = project.appetite?.dataType === 'SINGLE_SELECT'
-  const isConnected = hasCycleField && hasKindField && hasBetField && hasAppetiteField
+  const isConnected = hasCycleField && hasKindField && hasAppetiteField
 
   return (
     <li key={project.url} className="relative flex items-center space-x-4 py-4">
