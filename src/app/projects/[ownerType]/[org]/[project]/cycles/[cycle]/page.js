@@ -331,7 +331,6 @@ export async function prepareData(params) {
   })
   const pitches = issues.filter(issue => issue.kind === 'Pitch')
   const bets = issues.filter(issue => issue.kind === 'Bet')
-  //console.log(`bets`, bets);
   function getVisibleCycleDetails(id) {
     let inCycle = false
     let cycle
