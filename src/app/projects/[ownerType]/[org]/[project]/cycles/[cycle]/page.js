@@ -485,7 +485,7 @@ function extractTasks(text) {
     while ((match = taskRegex.exec(scopeText)) !== null) {
       const task = {
         title: match[2],
-        progress: match[1] === "x" ? "100%" : "0%"
+        closed: match[1] === "x" ? true : false
       };
       tasks.push(task)
     }
