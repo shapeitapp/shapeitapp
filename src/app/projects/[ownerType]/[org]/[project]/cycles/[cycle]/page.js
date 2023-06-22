@@ -293,22 +293,23 @@ export async function prepareData(params) {
           }
           scope.color = colors[scopeIndex % colors.length]
         }
-      } else {
-        // If scopes are not available, try with tasks
-        const extractedScope = extractTasks(item.content.body)
-        for (let [scopeIndex, scope] of extractedScope.entries()) {
-          scope.history = null;
-          scope.bet = item.content.url
-          scope.progress = {
-            percentage: scope.closed === true ? 100 : 0,
-            history: null,
-            notPlanned: false,
-            completed: scope.closed === true,
-            closed: scope.closed === true
-          },
-          scope.color = colors[scopeIndex % colors.length]
-        }
-        scopes = [...extractedScope];
+      }
+      // We also extract text based tasks
+      const extractedScope = extractTasks(item.content.body)
+      for (let [scopeIndex, scope] of extractedScope.entries()) {
+        scope.history = null;
+        scope.bet = item.content.url
+        scope.progress = {
+          percentage: scope.closed === true ? 100 : 0,
+          history: null,
+          notPlanned: false,
+          completed: scope.closed === true,
+          closed: scope.closed === true
+        },
+        scope.color = colors[scopeIndex % colors.length]
+      }
+      if (extractedScope.length > 0) {
+        scopes = scopes.concat(extractedScope);
       }
     }
     return {
@@ -475,19 +476,21 @@ function getHistoryPoint(commentObject) {
 
 function extractTasks(text) {
   const tasks = []
-  const scopeRegex = /## Scope([\s\S]*?)(?=\n## \w|\n$)/
+  const scopeRegex = /###?\sScope([^-]+)((-\s+\[[\sX|x]\]\s*#?.+\s*)+)/gm
   const taskRegex = /- \[(x| )\] (.+)/g
 
-  const scopeMatch = text.match(scopeRegex)
+  const scopeMatch = scopeRegex.exec(text)
   if (scopeMatch) {
-    const scopeText = scopeMatch[1]
+    const scopeText = scopeMatch[2]
     let match
     while ((match = taskRegex.exec(scopeText)) !== null) {
-      const task = {
-        title: match[2],
-        closed: match[1] === "x" ? true : false
-      };
-      tasks.push(task)
+      if (!match[2].startsWith('#')) {
+        const task = {
+          title: match[2],
+          closed: match[1] === "x" ? true : false
+        };
+        tasks.push(task)
+      }
     }
   }
 
