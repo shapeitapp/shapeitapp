@@ -181,6 +181,7 @@ export async function prepareData(params) {
                       id
                       title
                       url
+                      body,
                       closed
                       closedAt
                       createdAt
@@ -285,7 +286,7 @@ export async function prepareData(params) {
           scope.history = getHistory(scope)
           scope.bet = item.content.url
           scope.progress = {
-            percentage: scope.closed === true ? 100 : getCurrentPercentage(scope.comments.nodes.map(node => node.bodyText)),
+            percentage: getCurrentPercentage(scope),
             history: scope.history,
             notPlanned: getLatestCloseState(history) === 'NOT_PLANNED',
             completed: getLatestCloseState(history) === 'COMPLETED',
@@ -295,21 +296,21 @@ export async function prepareData(params) {
         }
       }
       // We also extract text based tasks
-      const extractedScope = extractTasks(item.content.body)
-      for (let [scopeIndex, scope] of extractedScope.entries()) {
-        scope.history = null;
-        scope.bet = item.content.url
-        scope.progress = {
-          percentage: scope.closed === true ? 100 : 0,
+      const extractedScopes = extractTasks(item.content.body)
+      for (let [scopeIndex, extractedScope] of extractedScopes.entries()) {
+        extractedScope.history = null;
+        extractedScope.bet = item.content.url
+        extractedScope.progress = {
+          percentage: extractedScope.closed === true ? 100 : 0,
           history: null,
           notPlanned: false,
-          completed: scope.closed === true,
-          closed: scope.closed === true
+          completed: extractedScope.closed === true,
+          closed: extractedScope.closed === true
         },
-        scope.color = colors[scopeIndex % colors.length]
+        extractedScope.color = colors[scopeIndex % colors.length]
       }
-      if (extractedScope.length > 0) {
-        scopes = scopes.concat(extractedScope);
+      if (extractedScopes.length > 0) {
+        scopes = scopes.concat(extractedScopes);
       }
     }
     return {
@@ -404,7 +405,9 @@ function getLatestCloseState(history) {
   if (closeStates.length) return history[closeStates.length-1].closeReason
 }
 
-function getCurrentPercentage(comments) {
+function getCurrentPercentage(scope) {
+  if (scope.closed) return 100
+  const comments = scope.comments.nodes.map(node => node.bodyText)
   const reversedComments = comments.reverse()
   let percentage
   let i = 0
@@ -414,7 +417,16 @@ function getCurrentPercentage(comments) {
     i++
   } while (percentage === null && i < reversedComments.length)
 
-  return percentage === null ? 0 : percentage
+  if (percentage === null) { // No /progress command found
+    const extractedTasks = extractTasks(scope.body)
+    const totalTasks = extractedTasks.length
+    if (totalTasks === 0) return 0
+
+    const completedTasks = extractedTasks.filter(t => t.closed).length
+    return Math.round(completedTasks / totalTasks * 100)
+  }
+
+  return percentage
 }
 
 function getPercentage(comment = '') {
