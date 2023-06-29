@@ -36,7 +36,7 @@ export function IntroFooter() {
   return (
     <div className="mt-8 md:mt-0 md:order-1">
       <p className="text-center text-base leading-6 text-gray-400">
-        Made with <code className="text-sky-500">:love:</code> by <a href="https://www.fmvilas.me" target="_blank" className="text-sky-500 font-medium hover:text-sky-800 transition ease-in-out duration-150">Fran Mendez</a>
+        Made with <code className="text-sky-500">:love:</code> by <a href="https://www.fmvilas.me" target="_blank" className="text-sky-500 font-medium hover:text-sky-800 transition ease-in-out duration-150" rel="noreferrer">Fran Mendez</a>
       </p>
     </div>
   )

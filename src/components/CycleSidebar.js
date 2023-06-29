@@ -1,7 +1,7 @@
 import Bet from './Bet'
 import Scope from './Scope'
 
-export default function ({
+export default function CycleSidebar({
   availableBets,
   visibleBet,
   onBetChange = () => {},
@@ -15,7 +15,7 @@ export default function ({
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           Bets
         </h3>
-        <p className="max-w-4xl text-sm leading-5 text-gray-500">Ideas you're <strong>committed</strong> to implement during this cycle.</p>
+        <p className="max-w-4xl text-sm leading-5 text-gray-500">Ideas you&apos;re <strong>committed</strong> to implement during this cycle.</p>
       </div>
 
       <div>

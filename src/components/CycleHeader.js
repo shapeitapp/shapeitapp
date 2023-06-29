@@ -27,7 +27,7 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
     <>
       <div className="flex">
         <h2 className="flex-1 text-2xl leading-6 font-medium text-gray-900">
-          <a href={visibleCycle.url} target="_blank">{visibleCycle.title}</a>
+          <a href={visibleCycle.url} target="_blank" rel="noreferrer">{visibleCycle.title}</a>
           {
             inCycle && (
               <>

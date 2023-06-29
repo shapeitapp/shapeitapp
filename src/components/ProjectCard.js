@@ -25,11 +25,11 @@ export default function ProjectCard({ project }) {
             <div className="h-2 w-2 rounded-full bg-current" />
           </div>
           <h2 className="flex gap-x-2 min-w-0 text-sm font-semibold leading-6 text-white">
-            <a href={project.orgUrl} target="_blank">
+            <a href={project.orgUrl} target="_blank" rel="noreferrer">
               <span className="truncate text-gray-500">{project.orgName}</span>
             </a>
             <span className="text-gray-500">/</span>
-            <a href={project.url} target="_blank">
+            <a href={project.url} target="_blank" rel="noreferrer">
               <span className="whitespace-nowrap text-gray-500">{project.title}</span>
             </a>
           </h2>
@@ -39,7 +39,7 @@ export default function ProjectCard({ project }) {
           <svg viewBox="0 0 2 2" className="h-0.5 w-0.5 flex-none fill-gray-700">
             <circle cx={1} cy={1} r={1} />
           </svg>
-          <p className="whitespace-nowrap">Created by <a href={project.creator.url} target='_blank'>{project.creator.login}</a></p>
+          <p className="whitespace-nowrap">Created by <a href={project.creator.url} target='_blank' rel="noreferrer">{project.creator.login}</a></p>
         </div>
       </div>
       {
