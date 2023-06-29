@@ -44,7 +44,7 @@ export default function ProjectCard({ project }) {
       </div>
       {
         isConnected ? (
-            <a
+          <a
             className="flex space-x-4 items-center text-gray-500 bg-gray-400/10 ring-gray-400/20 rounded-full py-1 px-2 text-xs font-medium ring-1 ring-inset"
             href={`/projects/${project.ownerType}/${project.orgName}/${project.number}`}
           >
@@ -53,11 +53,12 @@ export default function ProjectCard({ project }) {
             <ChevronRightIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
           </a>
         ) : (
-          <button
+          <a
             className="text-pink-600 bg-pink-600/10 ring-pink-600/30 rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset"
+            href={`/projects/${project.ownerType}/${project.orgName}/${project.number}/configure`}
           >
             Connect
-          </button>
+          </a>
         )
       }
     </li>

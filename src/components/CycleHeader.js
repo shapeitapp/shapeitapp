@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { useProjectDetails } from '@/contexts/ProjectDetails'
 
 export default function CycleHeader({ visibleCycle, inCycle, previousCycle, nextCycle, isPastCycle }) {
-  const dueOnDate = DateTime.fromISO(visibleCycle.endDate.toISOString())
+  const dueOnDate = DateTime.fromISO(visibleCycle.endDate)
   const remainingDays = Math.floor(dueOnDate.diffNow('days').toObject().days)
   const { org, number: projectNumber, ownerType } = useProjectDetails()
 

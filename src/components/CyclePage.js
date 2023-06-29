@@ -5,8 +5,22 @@ import { useEffect, useState } from 'react'
 import Header from './Header'
 import Cycle from './Cycle'
 import CycleSidebar from './CycleSidebar'
+import { useProjectItemsDetails } from '@/contexts/ProjectItemsDetails'
+import { useUrlParams } from '@/contexts/UrlParams'
+import { notFound } from 'next/navigation'
 
-export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCycle, availablePitches = [], availableBets = [], availableScopes = [] }) {
+export default function CyclePage() {
+  const { cycle } = useUrlParams()
+  const { cycles, pitches, bets } = useProjectItemsDetails()
+  const {
+    visibleCycle,
+    inCycle,
+    previousCycle,
+    nextCycle,
+    availableBets,
+    availablePitches,
+  } = prepareData({ requestedCycle: cycle, cycles, pitches, bets })
+
   const [visibleBet, setVisibleBet] = useState(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
   const [visibleScopes, setVisibleScopes] = useState(visibleBet?.scopes)
   const [selectedScopes, setSelectedScopes] = useState(visibleScopes)
@@ -19,7 +33,7 @@ export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCy
   
   useEffect(() => {
     setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
-  }, [visibleCycle])
+  }, [visibleCycle, availableBets])
 
   function onBetChange({ issue, toggled }) {
     if (toggled) {
@@ -82,9 +96,61 @@ export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCy
   )
 }
 
-function belongsToBet(bet, scope) {
-  if (!bet || !scope) return false
-  return scope.bet === bet.url
+function prepareData({ requestedCycle, cycles, pitches, bets }) {
+  let { cycle, inCycle } = getVisibleCycleDetails(requestedCycle, cycles)
+  if (!cycle) return notFound()
+  const visibleCycle = cycle
+  inCycle = inCycle
+  
+  const visibleCycleIndex = cycles.findIndex(cycle => cycle.id === visibleCycle.id)
+  const previousCycle = visibleCycleIndex > 0 ? cycles[visibleCycleIndex - 1] : null
+  const nextCycle = visibleCycleIndex < cycles.length - 1 ? cycles[visibleCycleIndex + 1] : null
+
+  const availablePitches = pitches.filter(p => p.cycle === visibleCycle.id)
+  const availableBets = bets.filter(b => b.cycle === visibleCycle.id)
+
+  return {
+    visibleCycle,
+    inCycle,
+    previousCycle,
+    nextCycle,
+    availableBets,
+    availablePitches,
+  }
+}
+
+function getVisibleCycleDetails(id, cycles) {
+  let inCycle = false
+  let cycle
+
+  if (id) {
+    cycle = cycles.find(cycle => String(cycle.id) === id)
+    if (cycle) {
+      const startDate = new Date(cycle.startDate)
+      const endDate = new Date(cycle.endDate)
+      const now = new Date()
+      inCycle = (startDate <= now && endDate >= now) 
+    }
+  } else {
+    for (const c of cycles) {
+      const startDate = new Date(c.startDate)
+      const endDate = new Date(c.endDate)
+      const now = new Date()
+      cycle = c
+      if (startDate <= now && endDate >= now) {
+        inCycle = true
+        break
+      } else if (startDate > now) {
+        inCycle = false
+        break
+      }
+    }
+  }
+
+  return {
+    cycle,
+    inCycle,
+  }
 }
 
 function belongsToCycle(cycle, bet) {
