@@ -1,6 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import GithubFlavoredMarkdown from 'remark-gfm'
 import RemarkEmoji from 'remark-emoji'
+import { LinkIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline'
 
 export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   function fullDateTime() {
@@ -52,9 +53,13 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
             </div>
           </div>
         </div>
-        <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-8 prose prose-pink">
+        <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-7 prose prose-pink">
           {statusUpdate.progress.statusMarkdown}
         </ReactMarkdown>
+        <div className='flex'>
+          <LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" />
+          <ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" />
+        </div>
       </>
     )
   }
@@ -62,7 +67,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   function CloseUpdate() {
     if (statusUpdate.progress.notPlanned) {
       return (
-        <div className="flex">
+        <div className="flex mt-4 mb-8">
           <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
           <div className="ml-2 -mt-1">
             <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
@@ -88,7 +93,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
     }
 
     return (
-      <div className="flex">
+      <div className="flex mt-4 mb-8">
         <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
         <div className="ml-2 -mt-1">
           <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
@@ -114,7 +119,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   }
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className} border-b stroke-gray-200`}>
       {
         statusUpdate.progress.closed ? (
           <CloseUpdate />

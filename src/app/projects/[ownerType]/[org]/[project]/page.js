@@ -2,7 +2,7 @@ import CyclePage from '@/components/CyclePage'
 import { prepareData } from './cycles/[cycle]/page'
 import { ProjectDetailsProvider } from '@/contexts/ProjectDetails'
 
-export default async function ProjectPage({ params }) {
+export default async function ProjectPage({ params, searchParams }) {
   const {
     project,
     visibleCycle,
@@ -11,8 +11,9 @@ export default async function ProjectPage({ params }) {
     inCycle,
     availablePitches = [],
     availableBets = [],
-    availableScopes = []
-  }  = await prepareData(params)
+    availableScopes = [],
+    betIssue
+  }  = await prepareData(params, searchParams)
 
   return (
     <ProjectDetailsProvider value={project}>
@@ -24,6 +25,7 @@ export default async function ProjectPage({ params }) {
         availablePitches={availablePitches}
         availableBets={availableBets}
         availableScopes={availableScopes}
+        betIssue={betIssue}
       />
     </ProjectDetailsProvider>
   )

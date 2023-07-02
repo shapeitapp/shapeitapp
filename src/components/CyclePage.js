@@ -6,7 +6,7 @@ import Header from './Header'
 import Cycle from './Cycle'
 import CycleSidebar from './CycleSidebar'
 
-export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCycle, availablePitches = [], availableBets = [], availableScopes = [] }) {
+export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCycle, availablePitches = [], availableBets = [], availableScopes = [], betIssue = null }) {
   const [visibleBet, setVisibleBet] = useState(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
   const [visibleScopes, setVisibleScopes] = useState(visibleBet?.scopes)
   const [selectedScopes, setSelectedScopes] = useState(visibleScopes)
@@ -18,7 +18,12 @@ export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCy
   }, [visibleBet])
   
   useEffect(() => {
-    setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
+    if (betIssue) {
+      const found =  availableBets.find(bet => belongsToCycle(visibleCycle, bet) && bet.number === Number(betIssue))
+      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet) && bet.number === Number(betIssue)))
+    } else {
+      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
+    }
   }, [visibleCycle])
 
   function onBetChange({ issue, toggled }) {
@@ -82,10 +87,6 @@ export default function CyclePage({ visibleCycle, previousCycle, nextCycle, inCy
   )
 }
 
-function belongsToBet(bet, scope) {
-  if (!bet || !scope) return false
-  return scope.bet === bet.url
-}
 
 function belongsToCycle(cycle, bet) {
   if (!cycle || !bet) return false

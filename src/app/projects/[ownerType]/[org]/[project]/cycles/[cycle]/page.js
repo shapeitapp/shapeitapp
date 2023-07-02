@@ -7,6 +7,7 @@ import colors from '@/components/colors'
 import { ProjectDetailsProvider } from '@/contexts/ProjectDetails'
 
 export default async function ProjectCyclePage({ params }) {
+
   const {
     project,
     visibleCycle,
@@ -33,11 +34,13 @@ export default async function ProjectCyclePage({ params }) {
   )
 }
 
-export async function prepareData(params) {
+export async function prepareData(params, searchParams) {
   const session = await getServerSession(authOptions)
   const isLoggedIn = !!session
-
   const userOrOrganization = params.ownerType === 'org' ? 'organization' : 'user'
+  const betIssue = (searchParams && searchParams.hasOwnProperty('issue')) ? searchParams.issue : null
+
+  console.log(`betIssue`, betIssue);
 
   if (!isLoggedIn) {
     const data = await graphql(
@@ -395,7 +398,8 @@ export async function prepareData(params) {
     availableBets,
     cycles,
     bets,
-    pitches
+    pitches,
+    betIssue
   }
 }
 

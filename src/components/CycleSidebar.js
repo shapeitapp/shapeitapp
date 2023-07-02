@@ -31,7 +31,7 @@ export default function ({
         }
       </div>
 
-      <div className="mt-8 pb-5 border-b border-gray-200 space-y-2">
+      {/* <div className="mt-8 pb-5 border-b border-gray-200 space-y-2">
         <h3 className="text-lg leading-6 font-medium text-gray-900">
           Scopes
         </h3>
@@ -51,7 +51,7 @@ export default function ({
             <p className="italic text-sm text-gray-400 mt-4">No scopes have been created yet.</p>
           )
         }
-      </div>
+      </div> */}
     </div>
   )
 }
