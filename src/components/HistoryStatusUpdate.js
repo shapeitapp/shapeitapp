@@ -33,10 +33,10 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
         <div className="flex">
           <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
           <div className="ml-2 -mt-1">
-            <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
+            <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
             <div className="text-sm text-gray-500">
               Updated progress of
-              <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">
+              <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">
                 <div style={{ backgroundColor: statusUpdate.scope.color }} className="mr-1 rounded-full w-3 h-3"></div>
                 <div className="-mt-1">{statusUpdate.scope.title}</div>
               </a>
@@ -65,10 +65,10 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
         <div className="flex">
           <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
           <div className="ml-2 -mt-1">
-            <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
+            <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
             <div className="text-sm text-gray-500">
               Closed
-              <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">
+              <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">
                 <div style={{ backgroundColor: statusUpdate.scope.color }} className="mr-1 rounded-full w-3 h-3 animate-pulse"></div>
                 <div className="-mt-1">{statusUpdate.scope.title}</div>
               </a>
@@ -91,10 +91,10 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
       <div className="flex">
         <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
         <div className="ml-2 -mt-1">
-          <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
+          <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
           <div className="text-sm text-gray-500">
             Completed
-            <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">
+            <a href={statusUpdate.progress.url} target="_blank" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">
               <div style={{ backgroundColor: statusUpdate.scope.color }} className="mr-1 rounded-full w-3 h-3"></div>
               <div className="-mt-1">{statusUpdate.scope.title}</div>
             </a>

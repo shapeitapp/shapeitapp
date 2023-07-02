@@ -45,9 +45,9 @@ export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle,
                         </span>
                       ) : (
                         shouldShowPitches ? (
-                          <span>This cycle hasn't started yet. We're currently evaluating the pitches below and will soon decide which ones will make it to the cycle. Stay tuned!</span>
+                          <span>This cycle hasn&apos;t started yet. We&apos;re currently evaluating the pitches below and will soon decide which ones will make it to the cycle. Stay tuned!</span>
                           ) : (
-                          <span>We have already placed our bets but <strong>this cycle hasn't started yet</strong>. Stay tuned!</span>
+                          <span>We have already placed our bets but <strong>this cycle hasn&apos;t started yet</strong>. Stay tuned!</span>
                         )
                       )
                     }

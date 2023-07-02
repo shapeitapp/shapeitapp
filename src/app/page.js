@@ -105,7 +105,7 @@ export default async function Home() {
                 </div>
                 
                 <h2 className="prose-h2">Hill chart</h2>
-                <p>A hill chart helps you and your team quickly visualize where you're at in your project. Want to see how that feature is progressing? Stop bothering engineers to do stand-up meetings, simply have a look at your Shape It! dashboard.</p>
+                <p>A hill chart helps you and your team quickly visualize where you&apos;re at in your project. Want to see how that feature is progressing? Stop bothering engineers to do stand-up meetings, simply have a look at your Shape It! dashboard.</p>
               </article>
               <article className="prose prose-sky prose-invert">
                 <div className="relative mt-8 overflow-hidden rounded-xl bg-white dark:bg-gray-900 [&+*]:mt-8">
@@ -113,7 +113,7 @@ export default async function Home() {
                 </div>
                 
                 <h2 className="prose-h2">Progress updates</h2>
-                <p>Your team can communicate updates right on the issue or pull request they're working on. No need to go to a different app. Shape It! adapts to your workflow, not the other way around.</p>
+                <p>Your team can communicate updates right on the issue or pull request they&apos;re working on. No need to go to a different app. Shape It! adapts to your workflow, not the other way around.</p>
               </article>
             </main>
           </div>

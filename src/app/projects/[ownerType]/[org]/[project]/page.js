@@ -1,30 +1,10 @@
-import CyclePage from '@/components/CyclePage'
-import { prepareData } from './cycles/[cycle]/page'
-import { ProjectDetailsProvider } from '@/contexts/ProjectDetails'
+
+import { redirect } from 'next/navigation'
+import { fetchProject, isProjectConfigured } from './layout'
 
 export default async function ProjectPage({ params }) {
-  const {
-    project,
-    visibleCycle,
-    previousCycle,
-    nextCycle,
-    inCycle,
-    availablePitches = [],
-    availableBets = [],
-    availableScopes = []
-  }  = await prepareData(params)
-
-  return (
-    <ProjectDetailsProvider value={project}>
-      <CyclePage
-        visibleCycle={visibleCycle}
-        previousCycle={previousCycle}
-        nextCycle={nextCycle}
-        inCycle={inCycle}
-        availablePitches={availablePitches}
-        availableBets={availableBets}
-        availableScopes={availableScopes}
-      />
-    </ProjectDetailsProvider>
-  )
+  const project = await fetchProject(params)
+  const projectConfigured = await isProjectConfigured(project);
+  if (!projectConfigured) return redirect(`/projects/${params.ownerType}/${params.org}/${params.project}/configure`)
+  return redirect(`/projects/${params.ownerType}/${params.org}/${params.project}/cycles/${project.currentCycle.id}`)
 }

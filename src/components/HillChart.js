@@ -44,7 +44,7 @@ export default function HillChart({ scopes = [] }) {
         <g>
           {
             dots.map((dot, index) => (
-              <a key={index} href={dot.url} target="_blank">
+              <a key={index} href={dot.url} target="_blank" rel="noreferrer">
                 <title>{dot.text}</title>
                 <circle
                   key={index}

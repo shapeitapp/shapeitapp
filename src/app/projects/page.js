@@ -124,8 +124,6 @@ export default async function Projects() {
   ).flat()
   const allProjects = [userProjects, orgProjects].flat()
 
-  console.log(JSON.stringify(allProjects, null, 2))
-
   return (
     <>
       <Head>
@@ -141,7 +139,7 @@ export default async function Projects() {
         <ul role="list" className="divide-y divide-black/5">
           {
             allProjects.map((project) => (
-              <ProjectCard project={project} />
+              <ProjectCard key={project.url} project={project} />
             ))
           }
         </ul>

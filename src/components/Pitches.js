@@ -12,7 +12,7 @@ export default function Pitches({ pitches = [] }) {
         {
           pitches.map((pitch, index) => (
             <li key={index} className="col-span-1 flex flex-col text-center bg-white rounded-lg shadow">
-              <a href={pitch.url} target="_blank" className="flex-1 flex flex-col py-4 bg-cover rounded-tl-lg rounded-tr-lg" style={generateJSXMeshGradient(5)}>
+              <a href={pitch.url} target="_blank" className="flex-1 flex flex-col py-4 bg-cover rounded-tl-lg rounded-tr-lg" style={generateJSXMeshGradient(5)} rel="noreferrer">
                 <span className="mt-6 p-4 text-gray-900 text-xl leading-normal font-normal backdrop-blur-sm bg-white/30">{pitch.title}</span>
                 <dl className="mt-1 flex-grow flex flex-col justify-between">
                   { pitch.appetite ? (
@@ -34,7 +34,7 @@ export default function Pitches({ pitches = [] }) {
               <div className="border-t border-gray-200">
                 <div className="-mt-px flex">
                   <div className="w-0 flex-1 flex">
-                    <a href={pitch.url} target="_blank" className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-700 font-medium border border-transparent rounded-bl-lg rounded-br-lg hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 transition ease-in-out duration-150">
+                    <a href={pitch.url} target="_blank" className="relative w-0 flex-1 inline-flex items-center justify-center py-4 text-sm leading-5 text-gray-700 font-medium border border-transparent rounded-bl-lg rounded-br-lg hover:text-gray-500 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 transition ease-in-out duration-150" rel="noreferrer">
                       Read more
                     </a>
                   </div>
