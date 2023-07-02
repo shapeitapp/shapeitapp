@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
@@ -7,10 +7,15 @@ import Cycle from './Cycle'
 import CycleSidebar from './CycleSidebar'
 import { useProjectItemsDetails } from '@/contexts/ProjectItemsDetails'
 import { useUrlParams } from '@/contexts/UrlParams'
-import { notFound } from 'next/navigation'
+import { notFound, useSearchParams, usePathname, useRouter } from 'next/navigation'
+
 
 export default function CyclePage() {
   const { cycle } = useUrlParams()
+  const searchParams = useSearchParams()
+  const pathName = usePathname() || "/"
+  const router = useRouter()
+  const betIssue = searchParams.get('issue')
   const { cycles, pitches, bets } = useProjectItemsDetails()
   const {
     visibleCycle,
@@ -18,8 +23,8 @@ export default function CyclePage() {
     previousCycle,
     nextCycle,
     availableBets,
-    availablePitches,
-  } = prepareData({ requestedCycle: cycle, cycles, pitches, bets })
+    availablePitches
+  } = prepareData({ requestedCycle: cycle, cycles, pitches, bets, betIssue })
 
   const [visibleBet, setVisibleBet] = useState(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
   const [visibleScopes, setVisibleScopes] = useState(visibleBet?.scopes)
@@ -32,12 +37,27 @@ export default function CyclePage() {
   }, [visibleBet])
   
   useEffect(() => {
-    setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
-  }, [visibleCycle, availableBets])
+    if (betIssue) {
+      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet) && bet.number === Number(betIssue)))
+    } else {
+      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
+    }
+  }, [visibleCycle])
+
+  function updateSearchParam (searchParams, param, value) {
+    const currentSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
+    currentSearchParams.set(param, value);
+
+    return currentSearchParams;
+  }
 
   function onBetChange({ issue, toggled }) {
     if (toggled) {
       setVisibleBet(issue)
+      if (searchParams?.entries()) {
+        const updatedSearchParams = updateSearchParam(searchParams, "issue", issue.number)
+        router.push(`${pathName}?${updatedSearchParams}`, {shallow: true})
+      }
     }
   }
 
@@ -64,7 +84,6 @@ export default function CyclePage() {
 
       <div className="bg-white">
         <Header />
-
         <div className={`mt-16 ${!shouldShowPitches() && 'grid grid-cols-1 gap-6 lg:grid-cols-4'}`}>
           { !shouldShowPitches() && (
             <div>
