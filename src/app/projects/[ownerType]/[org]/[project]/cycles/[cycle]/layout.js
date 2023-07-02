@@ -222,7 +222,7 @@ async function prepareData(params) {
             {
               nodeId: id,
               headers: {
-                authorization: `token ${process.env.GITHUB_TOKEN}`
+                authorization: `token ${session?.accessToken}`
               }
             }
         )

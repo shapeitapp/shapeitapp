@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from "react"
+import { usePathname } from 'next/navigation'
 import Header from "@/components/Header"
 import { useProjectDetails } from "@/contexts/ProjectDetails"
 import { CheckCircleIcon, CheckIcon } from '@heroicons/react/20/solid'
 import Button from "./Button";
+import Link from 'next/link';
 
 
 export default function ProjectConfigurationPage() {
@@ -74,7 +76,8 @@ export default function ProjectConfigurationPage() {
           {
             currentStep === 'cycle' ? <CycleConfigStep status={steps.find(s => s.id === currentStep).status} project={project} /> :
             currentStep === 'kind' ? <KindConfigStep status={steps.find(s => s.id === currentStep).status} project={project} /> :
-            currentStep === 'appetite' ? <AppetiteConfigStep status={steps.find(s => s.id === currentStep).status} project={project} /> : null
+            currentStep === 'appetite' ? <AppetiteConfigStep status={steps.find(s => s.id === currentStep)?.status} project={project}  /> :
+            currentStep === 'done' ? <AppetiteConfigStep status="complete" project={project}  /> : null
           }
         </main>
       </div>
@@ -134,6 +137,8 @@ function KindConfigStep({ status }) {
 }
 
 function AppetiteConfigStep({ status }) {
+  const pathname = usePathname()
+  const projectPath = pathname.replace('/configure', '')
   if (status === 'complete') {
     return (
       <div className="prose prose-slate">
@@ -142,7 +147,9 @@ function AppetiteConfigStep({ status }) {
           The <strong className="mx-1.5">Appetite</strong> field is present and configured correctly in your project.
         </p>
         <div>
-          <Button onClick={() => { window.location.reload() }} text="Take me to the next step" />
+          <Link href={projectPath}>
+            <Button text="Take me to the next step" />
+          </Link>
         </div>
       </div>
     )

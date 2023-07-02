@@ -21,6 +21,8 @@ export default async function ProjectLayout({ params, children }) {
 }
 
 export async function fetchProject(params) {
+  const session = await getServerSession(authOptions)
+  if (!session) return redirect('/')
   const userOrOrganization = params.ownerType === 'org' ? 'organization' : 'user'
 
   const data = await graphql(
@@ -61,13 +63,12 @@ export async function fetchProject(params) {
       owner: params.org,
       projectNumber: Number(params.project),
       headers: {
-        authorization: `token ${process.env.GITHUB_TOKEN}`
+        authorization: `token ${session?.accessToken}`
       }
     }
   )
 
   const project = data?.[userOrOrganization]?.projectV2
-
   project.fields = Object.fromEntries(project?.fields?.nodes?.map(field => {
     if (!['Appetite', 'Cycle', 'Kind'].includes(field.name)) return
 
@@ -108,4 +109,18 @@ export async function fetchProject(params) {
   }
 
   return project
+}
+
+export async function isProjectConfigured(project) {
+  if (!project) {
+    return false;
+  }
+  const hasCurrentCycle = project.hasOwnProperty('currentCycle');
+  const hasKindField = project.fields.hasOwnProperty('Kind');
+  const hasCycleField = project.fields.hasOwnProperty('Cycle');
+  const hasAppetiteField = project.fields.hasOwnProperty('Appetite');
+
+  console.log(hasCurrentCycle, hasKindField, hasCycleField, hasAppetiteField);
+
+  return hasCurrentCycle && hasKindField && hasCycleField && hasAppetiteField;
 }
