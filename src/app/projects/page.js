@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth/next'
 import { redirect } from 'next/navigation'
 import { graphql } from "@octokit/graphql"
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions, getToken } from '@/app/api/auth/[...nextauth]/route'
 import Head from 'next/head'
 import ProjectCard from '@/components/ProjectCard'
 
@@ -93,7 +93,7 @@ export default async function Projects() {
       }`,
       {
         headers: {
-          authorization: `token ${session?.accessToken}`
+          authorization: `token ${getToken(session)}`
         }
       }
     )
