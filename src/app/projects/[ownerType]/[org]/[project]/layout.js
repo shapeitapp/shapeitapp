@@ -1,7 +1,7 @@
 import { graphql } from '@octokit/graphql'
 import { getServerSession } from 'next-auth/next'
 import { authOptions, getToken } from '@/app/api/auth/[...nextauth]/route'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { ProjectDetailsProvider } from '@/contexts/ProjectDetails'
 
 export default async function ProjectLayout({ params, children }) {
