@@ -1,6 +1,6 @@
 import { graphql } from '@octokit/graphql'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions, getToken } from '@/app/api/auth/[...nextauth]/route'
 import { ProjectItemsDetailsProvider } from '@/contexts/ProjectItemsDetails'
 import colors from '@/components/colors'
 import { UrlParamsProvider } from '@/contexts/UrlParams'
@@ -135,7 +135,7 @@ async function prepareData(params) {
         owner: params.org,
         projectNumber: Number(params.project),
         headers: {
-          authorization: `token ${session?.accessToken}`
+          authorization: `token ${getToken(session)}`
         }
       }
     )
@@ -222,7 +222,7 @@ async function prepareData(params) {
             {
               nodeId: id,
               headers: {
-                authorization: `token ${session?.accessToken}`
+                authorization: `token ${getToken(session)}`
               }
             }
         )

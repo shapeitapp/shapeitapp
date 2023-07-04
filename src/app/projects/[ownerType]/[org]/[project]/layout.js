@@ -1,7 +1,7 @@
 import { graphql } from '@octokit/graphql'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import { notFound } from 'next/navigation'
+import { getServerSession } from 'next-auth/next'
+import { authOptions, getToken } from '@/app/api/auth/[...nextauth]/route'
+import { notFound, redirect } from 'next/navigation'
 import { ProjectDetailsProvider } from '@/contexts/ProjectDetails'
 
 export default async function ProjectLayout({ params, children }) {
@@ -22,7 +22,6 @@ export default async function ProjectLayout({ params, children }) {
 
 export async function fetchProject(params) {
   const session = await getServerSession(authOptions)
-  if (!session) return redirect('/')
   const userOrOrganization = params.ownerType === 'org' ? 'organization' : 'user'
 
   const data = await graphql(
@@ -63,7 +62,7 @@ export async function fetchProject(params) {
       owner: params.org,
       projectNumber: Number(params.project),
       headers: {
-        authorization: `token ${session?.accessToken}`
+        authorization: `token ${getToken(session)}`
       }
     }
   )
@@ -119,8 +118,6 @@ export async function isProjectConfigured(project) {
   const hasKindField = project.fields.hasOwnProperty('Kind');
   const hasCycleField = project.fields.hasOwnProperty('Cycle');
   const hasAppetiteField = project.fields.hasOwnProperty('Appetite');
-
-  console.log(hasCurrentCycle, hasKindField, hasCycleField, hasAppetiteField);
 
   return hasCurrentCycle && hasKindField && hasCycleField && hasAppetiteField;
 }

@@ -32,5 +32,13 @@ export const authOptions = {
   }
 }
 
+
+export function getToken(session) {
+  if (!session) {
+    return process.env.GITHUB_TOKEN
+  }
+  return session?.accessToken
+}
+
 const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST }
