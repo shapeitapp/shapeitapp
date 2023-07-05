@@ -2,30 +2,45 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, go to your Github profile and create a new Project. Then go to Project settings (`https://github.com/users/[you-user-name]/projects/[project-id]/settings`) and add the following custom fields:
 
-|Name|Type|Values|Description|
-|---|---|---|---|
-|Cycle|Iteration|As many as you wish|The development cycles you're going to follow, i.e., the 6-weeks period.
-|Kind|Single Select|`Bet`, `Pitch`, and `Scope`|This is used to determine the kind of an issue/PR.
-|Bet|Text|_The bet issue URL_|When the issue/PR is of kind `Scope`, we need to specify which bet this is related to. It will contain the URL of the bet issue.
-|Appetite|Single Select|`Small Batch`, `Medium Bath`, and `Big Batch`|This is the Shape Up's appetite for your Pitch/Bet.
+1. If the Github project you want to connect does not already exist, navigate to your Github profile and create a new Project using the URL https://github.com/users/[your-username]/projects/.
+2. Login to https://shapeit.app/ and follow the provided steps to connect your Github project.
+3. Add some Bets to you project.
 
-You can now go to your project and start adding bets, pitches, scopes, etc.
+### Scopes
 
-Once you got your project setup, go to the `shapeup.config.js` file and replace the `owner` (your Github username) and `projectNumber` (the ID of your project) values with your own ones.
+1. In order to collect scopes a Bet must follow a certain template, we recommend to use [this one](./github/ISSUE_TEMPLATE/pitch.yml).
+2. Add this [github workflow](./github/workflows/add-scope-to-bet.yml) to your project as well.
 
-Right after that, create a file called `.env.local` and add the following line:
+Examples:
+
+- https://shapeit.app/projects/org/asyncapi/16/cycles/e4232524
+- https://shapeit.app/projects/user/Amzani/4/cycles/85c4c7ba
+
+
+## Contribute
+
+Create a file called `.env.local` with the following lines:
 
 ```
-GITHUB_TOKEN=[your-github-token]
+GITHUB_CLIENT_ID=xxxx
+GITHUB_CLIENT_SECRET=xxxx
+GITHUB_REDIRECT_URI=https://localhost:3000/api/auth/callback/github
+GITHUB_TOKEN=xxxx
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=yyyyy
+NEXT_PUBLIC_SITE_URL=http://localhost:3000/
 ```
+
+To get a `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` go to your [Github settings](https://github.com/settings/developers) and create a new OAuth app.
+`GITHUB_TOKEN` is needed to access public project without authentication.
 
 > You can create a new personal token [here](https://github.com/settings/tokens). Make sure it has, at least, the following scopes: `public_repo`, `read:project`, `read:user`.
 
 Then, run the development server:
 
 ```bash
+npm install
 npm run dev
 ```
 
@@ -61,3 +76,10 @@ A few notes:
 * We\'re going to use [this library](#link-to-website) to avoid losing time implementing this algorithm.
 * We decided to go for the quickest solution and will improve it if we got time at the end of the cycle.
 ```
+
+
+## Roadmap
+
+https://shapeit.app/projects/org/shapeitapp/1
+
+[Pitch a new feature request](https://github.com/shapeitapp/shapeitapp/issues/new?assignees=&labels=Pitch&projects=&template=pitch.yaml&title=%5BPITCH%5D%3A)
