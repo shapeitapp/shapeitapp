@@ -89,7 +89,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
           ):(
             <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></button>
           )}
-          <a href={statusUpdate.progress.url} target="_blank"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
+          <a href={statusUpdate.progress.url} target="_blank" rel="noreferrer"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
         </div>
       </>
     )
