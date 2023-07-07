@@ -15,7 +15,7 @@ export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle,
     return new Date(h2.progress.updatedAt) - new Date(h1.progress.updatedAt)
   }).filter(Boolean)
 
-  const isPastCycle = new Date(visibleCycle.endDate) < new Date()
+  const isPastCycle = visibleCycle.isShapeUp ? new Date(visibleCycle.endDate) < new Date() : false
 
   return (
     <>
@@ -36,7 +36,7 @@ export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle,
                 <div className="mt-2 text-sm leading-5 text-yellow-700">
                   <p>
                     {
-                      isPastCycle ? (
+                      isPastCycle && visibleCycle.isShapeUp ? (
                         <span>
                           This cycle has already finished.
                           <Link href="/" className="inline-flex mx-1.5 text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150">
@@ -47,7 +47,11 @@ export default function Cycle({ visibleCycle, inCycle, previousCycle, nextCycle,
                         shouldShowPitches ? (
                           <span>This cycle hasn&apos;t started yet. We&apos;re currently evaluating the pitches below and will soon decide which ones will make it to the cycle. Stay tuned!</span>
                           ) : (
-                          <span>We have already placed our bets but <strong>this cycle hasn&apos;t started yet</strong>. Stay tuned!</span>
+                            visibleCycle.isShapeUp ? (
+                              <span>We have already placed our bets but <strong>this cycle hasn&apos;t started yet</strong>. Stay tuned!</span>
+                            ) : (
+                              <span>The release date will be displayed after the completion of all scopes, Stay tuned!</span>
+                            )
                         )
                       )
                     }

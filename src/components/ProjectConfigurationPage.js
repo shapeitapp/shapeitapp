@@ -103,7 +103,7 @@ function CycleConfigStep({ status, project }) {
 
   return (
     <div className="prose prose-slate">
-      <p>Make sure you <a href="https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields/about-iteration-fields" rel="noreferrer" target="_blank">add a &quot;Cycle&quot; field to your GitHub project</a>. Its name must be &quot;Cycle&quot; (caps are important) and its type must be &quot;Iteration&quot;.</p>
+      <p>Make sure you <a href="https://docs.github.com/en/issues/planning-and-tracking-with-projects/understanding-fields/about-iteration-fields" rel="noreferrer" target="_blank">add a &quot;Cycle&quot; field to your GitHub project</a>. Its name must be &quot;Cycle&quot; (caps are important) and its type must be &quot;Iteration&quot; or a  &quot;Single Select &quot; .</p>
       <div>
         <Button onClick={() => { window.location.reload() }} text="I have done it!" />
       </div>

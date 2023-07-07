@@ -78,6 +78,7 @@ async function prepareData(params) {
                           name
                         }
                       }
+                      id
                       name
                     }
                     ...on ProjectV2ItemFieldTextValue {
@@ -123,6 +124,7 @@ async function prepareData(params) {
                   databaseId,
                   name,
                   options {
+                    id
                     name
                   }
                 }
@@ -243,16 +245,29 @@ async function prepareData(params) {
 
   projectData.fields.nodes.forEach(field => {
     if (field.name === 'Cycle') {
-      field.configuration.iterations.forEach(iteration => {
-        const startDate = new Date(iteration.startDate)
-        const endDate = new Date(startDate)
-        endDate.setDate(endDate.getDate() + iteration.duration)
-        cycles.push({
-          ...iteration,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+      if (field.__typename === 'ProjectV2IterationField' && field.configuration?.iterations) {
+        field.configuration.iterations.forEach(iteration => {
+          const startDate = new Date(iteration.startDate)
+          const endDate = new Date(startDate)
+          endDate.setDate(endDate.getDate() + iteration.duration)
+          cycles.push({
+            ...iteration,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            isShapeUp: true,
+          })
         })
-      })
+      }
+      else if (field.__typename === 'ProjectV2SingleSelectField' && field.options.length > 0) {
+        field.options.forEach(iteration => {
+          cycles.push({
+            ...iteration,
+            startDate: '',
+            endDate: '',
+            isShapeUp: false
+          })
+        })
+      }
     }
   })
 
@@ -264,7 +279,8 @@ async function prepareData(params) {
 
     const cycleNode = item.fieldValues.nodes.find(fv => fv.field?.name === 'Cycle')
     if (!cycleNode) return
-    const cycle = cycles.find(cycle => cycle.id === cycleNode.iterationId)
+    const cycle = cycleNode?.iterationId ? cycles.find(cycle => cycle.id === cycleNode.iterationId) :
+    cycles.find(cycle => cycle.name === cycleNode.name)
 
     const kind = item.fieldValues.nodes.find(fv => fv.field?.name === 'Kind')?.name
     let scopes = scopeData[item?.content?.id] ? scopeData[item?.content?.id] : []
@@ -319,8 +335,12 @@ async function prepareData(params) {
   }).filter(Boolean)
 
   cycles = cycles.sort((c1, c2) => { // Sort cycles by startDate
-    return new Date(c1.startDate) - new Date(c2.startDate)
+    if (c1.isShapeUp)
+      return new Date(c1.startDate) - new Date(c2.startDate)
+    else
+      return c1.name - c2.name
   })
+
   const pitches = issues.filter(issue => issue.kind === 'Pitch')
   const bets = issues.filter(issue => issue.kind === 'Bet')
 

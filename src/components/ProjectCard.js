@@ -10,7 +10,7 @@ const statuses = {
 }
 
 export default function ProjectCard({ project }) {
-  const hasCycleField = project.cycle?.dataType === 'ITERATION'
+  const hasCycleField = project.cycle?.dataType === 'ITERATION' ||  project.cycle?.dataType === 'SINGLE_SELECT'
   const hasKindField =
     project.kind?.dataType === 'SINGLE_SELECT' &&
     ['Pitch', 'Bet'].every(kind => !!project.kind?.options?.find(opt => opt.name === kind))
