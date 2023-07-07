@@ -1,8 +1,29 @@
 import ReactMarkdown from 'react-markdown'
 import GithubFlavoredMarkdown from 'remark-gfm'
 import RemarkEmoji from 'remark-emoji'
+import { LinkIcon, ChatBubbleOvalLeftIcon, CheckIcon } from '@heroicons/react/24/outline'
+import React, { useState } from 'react'
 
 export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
+
+  const [isCopied, setIsCopied] = useState(false);
+  const handleCopy = () => {
+    const link = window.location.href;
+    copyLinkToClipboard(link);
+  };
+
+  const copyLinkToClipboard = (link) => {
+    const textField = document.createElement('textarea');
+    textField.innerText = link;
+    document.body.appendChild(textField);
+    textField.select();
+    document.execCommand('copy');
+    textField.remove();
+    setIsCopied(true);
+    setTimeout(() => setIsCopied(false), 3000);
+  };
+
+
   function fullDateTime() {
     const date = new Date(statusUpdate.progress.createdAt).toDateString()
     const time = new Date(statusUpdate.progress.createdAt).toLocaleTimeString()
@@ -52,9 +73,24 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
             </div>
           </div>
         </div>
-        <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-8 prose prose-pink">
+        <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-7 prose prose-pink">
           {statusUpdate.progress.statusMarkdown}
         </ReactMarkdown>
+        <div className='flex' >
+          {isCopied ?(
+            <div className="group relative w-max">
+              <CheckIcon className="h-5 w-5 text-green-600 mr-6" aria-hidden="true" />
+              <span
+                className="pointer-events-none absolute -top-6 -left-2 w-max opacity-0 transition-opacity group-hover:opacity-100 text-gray-400 text-xs"
+              >
+                Copied!
+              </span>
+            </div>
+          ):(
+            <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></button>
+          )}
+          <a href={statusUpdate.progress.url} target="_blank"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
+        </div>
       </>
     )
   }
@@ -62,7 +98,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   function CloseUpdate() {
     if (statusUpdate.progress.notPlanned) {
       return (
-        <div className="flex">
+        <div className="flex mt-4 mb-8">
           <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
           <div className="ml-2 -mt-1">
             <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
@@ -88,7 +124,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
     }
 
     return (
-      <div className="flex">
+      <div className="flex  mt-4 mb-8">
         <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
         <div className="ml-2 -mt-1">
           <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
@@ -114,7 +150,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   }
 
   return (
-    <div className={`${className}`}>
+    <div className={`${className}  border-b stroke-gray-200`}>
       {
         statusUpdate.progress.closed ? (
           <CloseUpdate />
