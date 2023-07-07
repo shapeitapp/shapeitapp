@@ -50,6 +50,7 @@ export async function fetchProject(params) {
                 databaseId,
                 name,
                 options {
+                  id
                   name
                 }
               }
@@ -71,7 +72,8 @@ export async function fetchProject(params) {
   project.fields = Object.fromEntries(project?.fields?.nodes?.map(field => {
     if (!['Appetite', 'Cycle', 'Kind'].includes(field.name)) return
 
-    if (field.name === 'Cycle' && field.__typename !== 'ProjectV2IterationField') return
+    if (field.name === 'Cycle' && field.__typename !== 'ProjectV2IterationField' &&
+      field.__typename !== 'ProjectV2SingleSelectField') return
     if (field.name === 'Appetite' && field.__typename !== 'ProjectV2SingleSelectField') return
     if (field.name === 'Kind' && field.__typename !== 'ProjectV2SingleSelectField') return
 
@@ -87,24 +89,31 @@ export async function fetchProject(params) {
   project.org = params.org
   project.ownerType = params.ownerType
   project.number = Number(params.project)
+  let isShapeUpCycle = true
 
   if (project.fields.Cycle?.values?.length) {
     for (const c of project.fields.Cycle?.values) {
-      const startDate = new Date(c.startDate)
-      const endDate = new Date(startDate)
-      endDate.setDate(endDate.getDate() + c.duration)
-      const now = new Date()
+      if (c?.startDate && c?.startDate && c?.duration) {
+        const startDate = new Date(c.startDate)
+        const endDate = new Date(startDate)
+        endDate.setDate(endDate.getDate() + c.duration)
+        const now = new Date()
 
-      if (startDate <= now && endDate >= now) {
-        project.currentCycle = c
-        break
-      } else if (startDate > now) {
-        project.currentCycle = c
-        break
+        if (startDate <= now && endDate >= now) {
+          project.currentCycle = c
+          break
+        } else if (startDate > now) {
+          project.currentCycle = c
+          break
+        }
+      } else {
+        isShapeUpCycle = false
       }
     }
 
-    if (!project.currentCycle) project.currentCycle = project.fields.Cycle.values[project.fields.Cycle.values.length - 1]
+    if (!project.currentCycle) {
+      project.currentCycle = isShapeUpCycle ? project.fields.Cycle.values[project.fields.Cycle.values.length - 1] : project.fields.Cycle.values[0]
+    }
   }
 
   return project

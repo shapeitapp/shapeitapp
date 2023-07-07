@@ -61,7 +61,14 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
           }
         </div>
       </div>
-      <p className="my-4 text-gray-500">{inCycle ? 'The current' : 'This'} cycle {isPastCycle || inCycle ? 'started' : 'starts'} on {new Date(visibleCycle.startDate).toDateString()} and {isPastCycle ? 'finished' : 'will finish'} on {new Date(visibleCycle.endDate).toDateString()}.</p>
+      {visibleCycle.isShapeUp &&
+        <p className="my-4 text-gray-500">{inCycle ? 'The current' : 'This'} cycle {isPastCycle || inCycle ? 'started' : 'starts'} on {new Date(visibleCycle.startDate).toDateString()} and {isPastCycle ? 'finished' : 'will finish'} on {new Date(visibleCycle.endDate).toDateString()}.</p>
+      }
+      {!visibleCycle.isShapeUp &&
+        <div>
+          <p className="text-2xl">{visibleCycle.name}</p>
+        </div>
+      }
     </>
   )
 }
