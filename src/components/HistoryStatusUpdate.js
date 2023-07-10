@@ -2,27 +2,42 @@ import ReactMarkdown from 'react-markdown'
 import GithubFlavoredMarkdown from 'remark-gfm'
 import RemarkEmoji from 'remark-emoji'
 import { LinkIcon, ChatBubbleOvalLeftIcon, CheckIcon } from '@heroicons/react/24/outline'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
 
-  const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false)
+  const [isSelected, setIsSelected] = useState(false);
+
+  useEffect(() => {
+    setIsSelected(window.location.hash === `#${statusUpdate.progress?.id}`)
+  }, [])
+
   const handleCopy = () => {
-    const link = window.location.href;
-    copyLinkToClipboard(link);
+    const link = getLink()
+    copyLinkToClipboard(link)
   };
+
+  const getLink = () => {
+    let link
+    if (window.location.href.search('#') === -1) {
+      link = `${window.location.href}#${statusUpdate.progress?.id}`
+    } else {
+      link = window.location.href.replace(window.location.hash, `#${statusUpdate.progress?.id}`)
+    }
+    return link
+  }
 
   const copyLinkToClipboard = (link) => {
-    const textField = document.createElement('textarea');
-    textField.innerText = link;
-    document.body.appendChild(textField);
-    textField.select();
-    document.execCommand('copy');
-    textField.remove();
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 3000);
+    const textField = document.createElement('textarea')
+    textField.innerText = link
+    document.body.appendChild(textField)
+    textField.select()
+    document.execCommand('copy')
+    textField.remove()
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 3000)
   };
-
 
   function fullDateTime() {
     const date = new Date(statusUpdate.progress.createdAt).toDateString()
@@ -48,10 +63,30 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
     return 'text-green-500'
   }
 
+  function ShareLinks() {
+    return (
+      <div className='flex' >
+        {isCopied ?(
+          <div className="group relative w-max">
+            <CheckIcon className="h-5 w-5 text-green-600 mr-6" aria-hidden="true" />
+            <span
+              className="pointer-events-none absolute -top-6 -left-2 w-max opacity-0 transition-opacity group-hover:opacity-100 text-gray-400 text-xs"
+            >
+              Copied!
+            </span>
+          </div>
+        ):(
+          <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></button>
+        )}
+        <a href={statusUpdate.progress.url} target="_blank" rel="noreferrer"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
+      </div>
+    )
+  }
+
   function ProgressUpdate() {
     return (
       <>
-        <div className="flex">
+        <div className="flex ">
           <img className="inline-block h-10 w-10 rounded-md" src={statusUpdate.progress.author.avatarUrl} title={statusUpdate.progress.author.name || statusUpdate.progress.author.login} />
           <div className="ml-2 -mt-1">
             <a href={statusUpdate.progress.author.url} target="_blank" className="text-sm text-gray-900 font-medium hover:text-gray-600 transition ease-in-out duration-150" rel="noreferrer">{statusUpdate.progress.author.name || statusUpdate.progress.author.login}</a>
@@ -76,21 +111,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
         <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-7 prose prose-pink">
           {statusUpdate.progress.statusMarkdown}
         </ReactMarkdown>
-        <div className='flex' >
-          {isCopied ?(
-            <div className="group relative w-max">
-              <CheckIcon className="h-5 w-5 text-green-600 mr-6" aria-hidden="true" />
-              <span
-                className="pointer-events-none absolute -top-6 -left-2 w-max opacity-0 transition-opacity group-hover:opacity-100 text-gray-400 text-xs"
-              >
-                Copied!
-              </span>
-            </div>
-          ):(
-            <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></button>
-          )}
-          <a href={statusUpdate.progress.url} target="_blank" rel="noreferrer"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
-        </div>
+        <ShareLinks />
       </>
     )
   }
@@ -150,7 +171,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   }
 
   return (
-    <div className={`${className}  border-b stroke-gray-200`}>
+    <div className={isSelected ? "border-2 border-inherit rounded-md bg-gray-100 p-4 rounded-2 mb-2 mt-4 border-b stroke-gray-200" : "pt-4 mt-4 border-b stroke-gray-200" } id={statusUpdate.progress?.id}>
       {
         statusUpdate.progress.closed ? (
           <CloseUpdate />
