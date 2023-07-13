@@ -279,8 +279,11 @@ async function prepareData(params) {
 
     const cycleNode = item.fieldValues.nodes.find(fv => fv.field?.name === 'Cycle')
     if (!cycleNode) return
-    const cycle = cycleNode?.iterationId ? cycles.find(cycle => cycle.id === cycleNode.iterationId) :
-    cycles.find(cycle => cycle.name === cycleNode.name)
+    const cycle = cycleNode?.iterationId ?
+      cycles.find(cycle => cycle.id === cycleNode.iterationId) :
+      cycles.find(cycle => cycle.name === cycleNode.name)
+
+    if (!cycle) return
 
     const kind = item.fieldValues.nodes.find(fv => fv.field?.name === 'Kind')?.name
     let scopes = scopeData[item?.content?.id] ? scopeData[item?.content?.id] : []
