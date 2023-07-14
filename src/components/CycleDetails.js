@@ -6,7 +6,7 @@ export default function CycleDetails({ selectedScopes, history }) {
   return (
     <>
       <HillChart scopes={selectedScopes} />
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div data-test="scopes" className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         {
           (selectedScopes || []).map((scope, index) => (
             <ChartLegend key={index} issue={scope} className="mt-3" />

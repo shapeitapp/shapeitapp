@@ -22,7 +22,7 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
   const [showCalendar, setShowCalendar] = useState(false)
 
   const previousCycleButton = (
-    <div title={previousCycle && 'Go to the previous cycle'}>
+    <div data-test="previous-cycle" title={previousCycle && 'Go to the previous cycle'}>
       <svg className={`w-6 h-6 ${!previousCycle && 'text-gray-300'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
       </svg>
@@ -30,7 +30,7 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
   )
 
   const nextCycleButton = (
-    <div title={previousCycle && 'Go to the next cycle'}>
+    <div data-test="next-cycle" title={previousCycle && 'Go to the next cycle'}>
       <svg className={`w-6 h-6 ${!nextCycle && 'text-gray-300'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
       </svg>
@@ -93,6 +93,11 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
           }
         </div>
       </div>
+      {!visibleCycle.isShapeUp &&
+        <div>
+          <p data-test="cycle-name" className="text-2xl">{visibleCycle.name}</p>
+        </div>
+      }
     </>
   )
 }

@@ -4,11 +4,11 @@ describe('home page', () => {
   })
 
   it('h1 contains the correct text', () => {
-    cy.get("[data-test='hero-heading']").contains("Shape Up dashboard")
-    cy.get("[data-test='hero-heading']").contains("for GitHub Projects")
+    cy.getByData("hero-heading").contains("Shape Up dashboard")
+    cy.getByData("hero-heading").contains("for GitHub Projects")
   })
 
   it('contains a GitHub Signing button', () => {
-    cy.get("[data-test='github-sign-in']").contains("Sign in using GitHub")
+    cy.getByData("github-sign-in").contains("Sign in using GitHub")
   })
 })
