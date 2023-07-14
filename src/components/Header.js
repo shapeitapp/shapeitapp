@@ -8,7 +8,7 @@ export default function Header() {
     <div className="lg:flex lg:justify-between">
       <Link href={`/projects/${ownerType}/${org}/${number}`}>
         <h2 className="text-4xl leading-10 font-extrabold text-gray-900 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl">
-          <span className="shapeup-animated-gradient">{title}</span>
+          <span data-test="project-title" className="shapeup-animated-gradient">{title}</span>
         </h2>
       </Link>
       <div className="flex flex-col space-y-4">

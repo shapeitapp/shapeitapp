@@ -114,7 +114,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   }
 
   return (
-    <div className={`${className}`}>
+    <div data-test="history" className={`${className}`}>
       {
         statusUpdate.progress.closed ? (
           <CloseUpdate />
