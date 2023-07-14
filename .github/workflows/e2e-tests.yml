@@ -11,6 +11,14 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
+        env: 
+          CYPRESS_NEXTAUTH_URL: http://localhost:3000
+          CYPRESS_NEXTAUTH_SECRET: testtesttest
+          CYPRESS_NEXT_PUBLIC_SITE_URL: http://localhost:3000/
+          CYPRESS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_SECRET }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_ID }}
         with:
           build: npm run build
           start: npm start
+          
