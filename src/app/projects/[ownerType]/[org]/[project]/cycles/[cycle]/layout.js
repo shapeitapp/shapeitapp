@@ -439,7 +439,7 @@ function extractTasks(text) {
     const scopeText = scopeMatch[2]
     let match
     while ((match = taskRegex.exec(scopeText)) !== null) {
-      if (!match[2].startsWith('#')) {
+      if (!match[2].startsWith('#') && !match[2].startsWith('https://github.com')) {
         const task = {
           title: match[2],
           closed: match[1] === "x" ? true : false
