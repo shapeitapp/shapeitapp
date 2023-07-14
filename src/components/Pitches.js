@@ -3,7 +3,7 @@ import { generateJSXMeshGradient } from "meshgrad"
 export default function Pitches({ pitches = [] }) {
   return (
     <div>
-      <ul className="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <ul data-test="pitches" className="my-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
         {
           !pitches.length && (
             <p className="italic text-sm text-gray-400 mt-4">No pitches have been suggested yet.</p>
