@@ -17,7 +17,7 @@ export function Intro() {
       <div>
         <Logo size="m" />
       </div>
-      <h1 className="mt-12 font-display text-4xl/tight font-light text-white">
+      <h1 data-test="hero-heading" className="mt-12 font-display text-4xl/tight font-light text-white">
         <div>Shape Up dashboard</div>
         <span className="text-sky-300">for GitHub Projects</span>
       </h1>
