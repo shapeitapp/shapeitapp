@@ -19,7 +19,7 @@ export default function CycleDetails({ selectedScopes, history }) {
       <div>
         {
           history.length > 0 && history.map((statusUpdate, index) => (
-            <HistoryStatusUpdate key={index} statusUpdate={statusUpdate} />
+            <HistoryStatusUpdate key={index} statusUpdate={statusUpdate} className="mt-4" />
           ))
         }
         {

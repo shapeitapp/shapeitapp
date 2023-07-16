@@ -175,7 +175,6 @@ async function prepareData(params) {
                       createdAt
                       comments(last: 100) {
                           nodes {
-                            id
                             body
                             bodyText
                             createdAt
@@ -197,7 +196,6 @@ async function prepareData(params) {
                           nodes {
                             ... on ClosedEvent {
                               __typename
-                              id
                               url
                               stateReason
                               actor {
@@ -428,7 +426,6 @@ function getHistoryPoint(commentObject) {
     updatedAt: commentObject.updatedAt,
     author: commentObject.author,
     url: commentObject.url,
-    id: commentObject.id
   }
 }
 
