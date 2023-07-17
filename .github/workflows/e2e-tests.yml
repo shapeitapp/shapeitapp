@@ -8,16 +8,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      - name: create env file
+        run: |
+          touch .env
+          echo NEXTAUTH_URL=http://localhost:3000 >> .env
+          echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
+          echo NEXT_PUBLIC_SITE_URL=http://localhost:3000/ >> .env
+          echo GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} >> .env
+          echo CLIENT_ID=${{ secrets.GITHUB_CLIENT_SECRET }} >> .env
+          echo CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_ID }} >> .env
       - name: Cypress run
         uses: cypress-io/github-action@v5
-        env: 
-          CYPRESS_NEXTAUTH_URL: http://localhost:3000
-          CYPRESS_NEXTAUTH_SECRET: Wn9Jg/6KjvBWMsxD6lW0cUAvioHMrj8XdOlCJYxQWt4=
-          CYPRESS_NEXT_PUBLIC_SITE_URL: http://localhost:3000/
-          CYPRESS_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_SECRET }}
-          GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_ID }}
         with:
           env: NEXTAUTH_SECRET=Wn9Jg/6KjvBWMsxD6lW0cUAvioHMrj8XdOlCJYxQWt4=
           build: npm run build
