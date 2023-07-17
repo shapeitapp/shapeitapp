@@ -36,7 +36,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
     document.execCommand('copy')
     textField.remove()
     setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 30000)
+    setTimeout(() => setIsCopied(false), 3000)
   };
 
   function fullDateTime() {
