@@ -19,7 +19,7 @@ jobs:
           echo NEXTAUTH_URL=http://localhost:3000 >> .env
           echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
           echo NEXT_PUBLIC_SITE_URL=http://localhost:3000/ >> .env
-          echo GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} >> .env
+          echo GITHUB_TOKEN=${{ secrets.GH_TOKEN }} >> .env
           echo CLIENT_ID=${{ secrets.GITHUB_CLIENT_SECRET }} >> .env
           echo CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_ID }} >> .env
       - name: Cypress run
