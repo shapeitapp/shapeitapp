@@ -65,18 +65,18 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
 
   function ShareLinks() {
     return (
-      <div className='flex' >
+      <div className='flex float-right' >
         {isCopied ?(
           <div className="group relative w-max">
-            <CheckIcon className="h-5 w-5 text-green-600 mr-6" aria-hidden="true" />
+            <CheckIcon className="h-5 w-5 text-green-600 ml-6 mr-6" aria-hidden="true" />
             <span
-              className="pointer-events-none absolute -top-6 -left-2 w-max opacity-0 transition-opacity group-hover:opacity-100 text-gray-400 text-xs"
+              className="pointer-events-none absolute -top-6 ml-6 w-max opacity-0 transition-opacity group-hover:opacity-100 text-gray-400 text-xs"
             >
               Copied!
             </span>
           </div>
         ):(
-          <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></button>
+          <button onClick={handleCopy}><LinkIcon className="h-5 w-5 text-gray-400 mb-2 ml-6 mr-6" aria-hidden="true" /></button>
         )}
         <a href={statusUpdate.progress.url} target="_blank" rel="noreferrer"><ChatBubbleOvalLeftIcon className="h-5 w-5 text-gray-400 mb-2 mr-6" aria-hidden="true" /></a>
       </div>
@@ -100,6 +100,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
               <span title={fullDateTime()}>
                 {lastDate()}
               </span>
+              <ShareLinks />
               {
                 statusUpdate.progress.createdAt !== statusUpdate.progress.updatedAt && (
                   <span className="text-gray-400 ml-2">(edited)</span>
@@ -111,7 +112,6 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
         <ReactMarkdown plugins={[GithubFlavoredMarkdown, RemarkEmoji]} className="mt-4 mb-7 prose prose-pink">
           {statusUpdate.progress.statusMarkdown}
         </ReactMarkdown>
-        <ShareLinks />
       </>
     )
   }
