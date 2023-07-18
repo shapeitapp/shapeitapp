@@ -323,6 +323,7 @@ async function prepareData(params) {
       if (extractedScope.length > 0) {
         scopes = scopes.concat(extractedScope);
       }
+      console.log(scopes)
     }
     return {
       title: item.content.title,
@@ -332,12 +333,15 @@ async function prepareData(params) {
       closedAt: item.content.closedAt,
       createdAt: item.content.createdAt,
       author: item.content.author,
+      progress: getBetProgress(scopes),
       kind,
       appetite: item.fieldValues.nodes.find(fv => fv.field?.name === 'Appetite')?.name,
       cycle: cycle.id,
       scopes
     }
   }).filter(Boolean)
+
+  console.log(`issues`, issues)
 
   cycles = cycles.sort((c1, c2) => { // Sort cycles by startDate
     if (c1.isShapeUp)
@@ -372,6 +376,19 @@ function getCurrentPercentage(comments) {
   } while (percentage === null && i < reversedComments.length)
 
   return percentage === null ? 0 : percentage
+}
+
+function getBetProgress(scopes) {
+  let betProgress = 0
+
+  if (scopes.length === 0){
+    return 0
+  }
+
+  for (const scope of scopes){
+    betProgress += scope.progress.percentage
+  }
+  return (betProgress/scopes.length)
 }
 
 function getPercentage(comment = '') {

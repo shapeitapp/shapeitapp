@@ -55,17 +55,6 @@
   animation: GradientAnimation 50s ease infinite alternate;
 }
 
-.shapeup-progress-bet {
-  background: linear-gradient(to right, rgb(22 101 52) 99.99%, transparent),
-    linear-gradient(to bottom, rgb(21 128 61) 99.99%, transparent),
-    linear-gradient(to right, rgb(22 163 74) 99.99%, transparent),
-    linear-gradient(to bottom, rgb(74 222 128) 99.99%, transparent);
-  background-size: 100% 5px, 5px 100%, 100% 5px, 5px 100%;
-  background-repeat: no-repeat;
-  height: 100px;
-  width: 250px;
-}
-
 @keyframes GradientAnimation {
     0%{background-position:0% 50%}
     100%{background-position:200% 50%}
