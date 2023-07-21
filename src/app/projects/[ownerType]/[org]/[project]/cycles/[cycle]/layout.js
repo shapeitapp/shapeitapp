@@ -325,6 +325,7 @@ async function prepareData(params) {
       }
     }
     return {
+      id: item.content.id,
       title: item.content.title,
       url: item.content.url,
       number: item.content.number,

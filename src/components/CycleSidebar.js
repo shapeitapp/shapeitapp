@@ -23,7 +23,7 @@ export default function CycleSidebar({
       <div>
         {
           availableBets.map((bet, index) => {
-            return <Bet key={index} issue={bet} toggled={visibleBet && bet.url === visibleBet.url} className="mt-3" onChange={onBetChange} />
+            return <Bet key={index} issue={bet} toggled={visibleBet && bet.id === visibleBet.id}  className="mt-3" onChange={onBetChange} />
           })
         }
         {

@@ -114,14 +114,29 @@ export default async function Projects() {
     orgUrl: responseData.viewer.url,
     ...project
   }))
-  const orgProjects = responseData.viewer.organizations.nodes.map(org =>
-    org.projectsV2.nodes.map(project => ({
-      ownerType: 'org',
-      orgName: org.login,
-      orgUrl: org.url,
-      ...project
-    }))
-  ).flat()
+
+  const orgProjects = responseData.viewer.organizations.nodes.reduce((projectsResult, org) => {
+      const projects = org.projectsV2.nodes.reduce((result, project) => {
+      // If the org didn't provide OAUTH permission for the current user, projects come as NULL
+      if (!project) {
+        return result;
+
+      }
+
+      result.push({
+        ownerType: 'org',
+        orgName: org.login,
+        orgUrl: org.url,
+        ...project
+      });
+
+      return result;
+    }, []);
+
+    projectsResult.push(projects);
+    return projectsResult;
+  }, []).flat();
+
   const allProjects = [userProjects, orgProjects].flat()
 
   return (

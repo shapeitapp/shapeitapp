@@ -38,11 +38,11 @@ export default function CyclePage() {
   
   useEffect(() => {
     if (betIssue) {
-      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet) && bet.number === Number(betIssue)))
+      setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet) && bet.id === betIssue))
     } else {
       setVisibleBet(availableBets.find(bet => belongsToCycle(visibleCycle, bet)))
     }
-  }, [visibleCycle])
+  }, [visibleCycle, availableBets, betIssue])
 
   function updateSearchParam (searchParams, param, value) {
     const currentSearchParams = new URLSearchParams(Array.from(searchParams.entries()));
@@ -55,7 +55,7 @@ export default function CyclePage() {
     if (toggled) {
       setVisibleBet(issue)
       if (searchParams?.entries()) {
-        const updatedSearchParams = updateSearchParam(searchParams, "issue", issue.number)
+        const updatedSearchParams = updateSearchParam(searchParams, "issue", issue.id)
         router.push(`${pathName}?${updatedSearchParams}`, {shallow: true})
       }
     }
