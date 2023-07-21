@@ -1,5 +1,3 @@
-import { useEffect, useState, useRef } from 'react'
-
 import Toggle from './Toggle'
 
 export default function Bet({
