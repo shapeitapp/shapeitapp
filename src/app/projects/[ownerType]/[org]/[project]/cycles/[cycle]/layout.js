@@ -333,6 +333,7 @@ async function prepareData(params) {
       closedAt: item.content.closedAt,
       createdAt: item.content.createdAt,
       author: item.content.author,
+      progress: getBetProgress(scopes),
       kind,
       appetite: item.fieldValues.nodes.find(fv => fv.field?.name === 'Appetite')?.name,
       cycle: cycle.id,
@@ -373,6 +374,12 @@ function getCurrentPercentage(comments) {
   } while (percentage === null && i < reversedComments.length)
 
   return percentage === null ? 0 : percentage
+}
+
+function getBetProgress(scopes) {
+  return scopes.length != 0 ?
+    scopes.reduce((acc, scope) => acc + scope.progress.percentage, 0) / scopes.length :
+    0;
 }
 
 function getPercentage(comment = '') {

@@ -1,6 +1,7 @@
 import Bet from './Bet'
 import Scope from './Scope'
 
+
 export default function CycleSidebar({
   availableBets,
   visibleBet,
@@ -9,6 +10,7 @@ export default function CycleSidebar({
   selectedScopes,
   onScopeChange = () => {},
 }) {
+
   return (
     <div className="lg:shadow lg:p-4">
       <div className="pb-5 border-b border-gray-200 space-y-2">
