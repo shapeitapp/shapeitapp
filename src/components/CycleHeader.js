@@ -1,11 +1,25 @@
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { DateTime } from 'luxon'
 import { useProjectDetails } from '@/contexts/ProjectDetails'
 
+function getWeeksAndDaysUntilDate(date){
+  const diff = date.diffNow(['weeks', 'days']).toObject();
+  const weeks = Math.floor(diff.weeks);
+  const days = Math.floor(diff.days);
+
+  const weekOutput = weeks !== 0 ? `${weeks} ${weeks === 1 ? 'Week' : 'Weeks'}` : '';
+  const dayOutput = days !== 0 ? `${days} ${days === 1 ? 'Day' : 'Days'}` : '';
+
+  return weekOutput + (weekOutput && dayOutput ? ', ' : '') + dayOutput;
+}
+
+
+
 export default function CycleHeader({ visibleCycle, inCycle, previousCycle, nextCycle, isPastCycle }) {
   const dueOnDate = DateTime.fromISO(visibleCycle.endDate)
-  const remainingDays = Math.floor(dueOnDate.diffNow('days').toObject().days)
   const { org, number: projectNumber, ownerType } = useProjectDetails()
+  const [showCalendar, setShowCalendar] = useState(false)
 
   const previousCycleButton = (
     <div title={previousCycle && 'Go to the previous cycle'}>
@@ -23,6 +37,14 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
     </div>
   )
 
+  const handleMouseEnter = () => {
+    setShowCalendar(true);
+  };
+
+  const handleMouseLeave = () => {
+    setShowCalendar(false);
+  };
+
   return (
     <>
       <div className="flex">
@@ -35,9 +57,19 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
                   <span className="inline-block mr-1 animate-pulse bg-red-500 rounded-full w-2 h-2"></span>
                   Current cycle
                 </span>
-                
-                <span className="inline-block transform -translate-y-1.5 ml-2 px-2 py-1 text-indigo-800 uppercase text-xs leading-4 font-medium border border-indigo-100 rounded-full">
-                  { remainingDays } days remaining
+
+                <span  className="inline-block transform -translate-y-1.5 ml-2 px-2 py-1 text-indigo-800 uppercase text-xs leading-4 font-medium border border-indigo-100 rounded-full">
+                 <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                  { getWeeksAndDaysUntilDate(dueOnDate) } remaining
+                  </div>
+                  {showCalendar &&
+                    <div className=" flex flex-col bg-gray-100 text-gray-800 w-[11rem] p-2 border-inherit rounded-md absolute z-1 mt-2 border border-cyan-100">
+                      <span className='mt-2 font-bold'>Start Date: </span>
+                      <span>{new Date(visibleCycle.startDate).toDateString()}</span>
+                      <span className='mt-2 font-bold'>Projected End Date : </span>
+                      <span>{new Date(visibleCycle.endDate).toDateString()}</span>
+                    </div>
+                  }
                 </span>
               </>
             )
@@ -61,14 +93,6 @@ export default function CycleHeader({ visibleCycle, inCycle, previousCycle, next
           }
         </div>
       </div>
-      {visibleCycle.isShapeUp &&
-        <p className="my-4 text-gray-500">{inCycle ? 'The current' : 'This'} cycle {isPastCycle || inCycle ? 'started' : 'starts'} on {new Date(visibleCycle.startDate).toDateString()} and {isPastCycle ? 'finished' : 'will finish'} on {new Date(visibleCycle.endDate).toDateString()}.</p>
-      }
-      {!visibleCycle.isShapeUp &&
-        <div>
-          <p className="text-2xl">{visibleCycle.name}</p>
-        </div>
-      }
     </>
   )
 }
