@@ -4,10 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "start": "next start",
     "prebuild": "node prebuild.js",
     "build": "next build",
     "lint": "next lint",
-    "lint:fix": "next lint --fix"
+    "lint:fix": "next lint --fix",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
@@ -36,6 +39,7 @@
   "devDependencies": {
     "@netlify/plugin-nextjs": "^4.36.1",
     "@tailwindcss/typography": "^0.5.9",
+    "cypress": "^12.17.1",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.2",
     "prettier": "^2.8.7",

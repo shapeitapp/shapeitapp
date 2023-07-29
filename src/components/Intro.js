@@ -17,14 +17,14 @@ export function Intro() {
       <div>
         <Logo size="m" />
       </div>
-      <h1 className="mt-12 font-display text-4xl/tight font-light text-white">
+      <h1 data-test="hero-heading" className="mt-12 font-display text-4xl/tight font-light text-white">
         <div>Shape Up dashboard</div>
         <span className="text-sky-300">for GitHub Projects</span>
       </h1>
       <p className="mt-4 text-sm/6 text-gray-300">
         Convert your GitHub Project into Shape Up one. Visualize the progress of your team while keeping your operations on GitHub.
       </p>
-      <button onClick={() => signIn('github')} className="text-white inline-flex flex-row cursor-pointer align-middle mt-8 px-5 py-4 border-sky-700 border rounded-lg hover:border-sky-950 hover:bg-sky-950">
+      <button data-test="github-sign-in" onClick={() => signIn('github')} className="text-white inline-flex flex-row cursor-pointer align-middle mt-8 px-5 py-4 border-sky-700 border rounded-lg hover:border-sky-950 hover:bg-sky-950">
         <GitHubIcon className="w-6 inline-block mr-4" />
         Sign in using GitHub
       </button>

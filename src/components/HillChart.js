@@ -34,7 +34,7 @@ export default function HillChart({ scopes = [] }) {
   }
   
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-full" viewBox="0 0 820 260">
+    <svg data-test="hill-chart" xmlns="http://www.w3.org/2000/svg" className="w-full" viewBox="0 0 820 260">
       <g transform="translate(15, 15)">
         <path className="stroke-gray-200" fill="none" strokeWidth="1.5" d="M0,205H790" />
         <path className="stroke-gray-200" fill="none" strokeDasharray="2 2" strokeWidth="1.5" d="M395,0V195" />

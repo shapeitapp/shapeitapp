@@ -44,6 +44,12 @@ npm install
 npm run dev
 ```
 
+### Tests
+
+```
+npm run cypress:run
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the Shape Up application.
 
 ## Communicating progress

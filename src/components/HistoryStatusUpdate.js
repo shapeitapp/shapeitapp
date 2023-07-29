@@ -171,7 +171,7 @@ export default function HistoryStatusUpdate ({ statusUpdate, className = '' }) {
   }
 
   return (
-    <div className={isSelected ? "border-2 border-inherit rounded-md bg-gray-100 p-4 rounded-2 mb-2 mt-4 border-b stroke-gray-200" : "pt-4 mt-4 border-b stroke-gray-200" } id={statusUpdate.progress?.id}>
+    <div data-test="history" className={isSelected ? "border-2 border-inherit rounded-md bg-gray-100 p-4 rounded-2 mb-2 mt-4 border-b stroke-gray-200" : "pt-4 mt-4 border-b stroke-gray-200" } id={statusUpdate.progress?.id}>
       {
         statusUpdate.progress.closed ? (
           <CloseUpdate />
