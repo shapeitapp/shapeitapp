@@ -10,7 +10,7 @@ You can create new scopes in two different ways:
 ### Option 1
 
 1. Edit the Pitch or Bet issue
-2. Add you scope under the scope section
+2. Add your scope under the scope section
 
 See this [example](https://github.com/asyncapi/studio/issues/748)
 

@@ -33,7 +33,6 @@ export default async function GuidePage({params}) {
   }
 
   const content = await getDocumentation(params.id)
-  console.log('content', content)
 
   return (
     <div className="flex flex-col w-screen max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
