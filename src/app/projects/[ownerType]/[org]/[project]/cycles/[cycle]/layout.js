@@ -182,6 +182,7 @@ async function prepareData(params) {
                             updatedAt
                             url
                             author {
+                              login
                               avatarUrl(size: 100)
                               ... on User {
                                 name
@@ -303,7 +304,8 @@ async function prepareData(params) {
             completed: getLatestCloseState(history) === 'COMPLETED',
             closed: scope.closed === true
           }
-          scope.color = colors[scopeIndex % colors.length]
+          scope.atRisk = isScopeAtRisk(scope.comments.nodes)
+          scope.color = isScopeAtRisk(scope.comments.nodes) ? 'red' : colors[scopeIndex % colors.length]
         }
       }
       // We also extract text based tasks
@@ -382,6 +384,12 @@ function getBetProgress(scopes) {
     0;
 }
 
+function isScopeAtRisk(comments) {
+  if (comments.length === 0) return false
+  const botComment = comments.find(comment => comment.author.login === 'shapeit-bot')
+  return !!(botComment?.bodyText?.includes('at risk'))
+}
+
 function getPercentage(comment = '') {
   const matches = comment.match(/^\/progress[\s]+([\d]+)/)
   if (matches && matches.length === 2) {
@@ -426,18 +434,30 @@ function getHistory(scope) {
 }
 
 function getHistoryPoint(commentObject) {
-  if (!commentObject.bodyText.match(/^\/progress[\s]+/)) return
+  let atRisk = false
 
+  if (!commentObject.bodyText.match(/^\/progress[\s]+/) && !commentObject.bodyText.match(/^\/at-risk[\s]+/) ) return
+
+  if (commentObject.bodyText.match(/^\/at-risk[\s]+/)) {
+    atRisk = true
+  }
   return {
-    percentage: getPercentage(commentObject.bodyText),
-    status: getStatus(commentObject.bodyText),
-    statusMarkdown: getStatus(commentObject.body),
+    percentage: atRisk ? 0 : getPercentage(commentObject.bodyText),
+    status: atRisk ? getAtRiskDetails(commentObject.bodyText) : getStatus(commentObject.bodyText),
+    statusMarkdown: atRisk ? `⚠️ ${getAtRiskDetails(commentObject.body)}` : getStatus(commentObject.body),
     createdAt: commentObject.createdAt,
     updatedAt: commentObject.updatedAt,
     author: commentObject.author,
     url: commentObject.url,
-    id: commentObject.id
+    id: commentObject.id,
+    atRisk: atRisk
   }
+}
+
+function getAtRiskDetails(commentBody = '') {
+  const matches = commentBody.match(/^\/at-risk[\s]+(.*)/s)
+  if (matches && matches.length === 2) return matches[1]
+  return null
 }
 
 function extractTasks(text) {
