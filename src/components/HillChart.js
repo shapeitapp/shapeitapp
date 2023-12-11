@@ -11,6 +11,8 @@ export default function HillChart({ scopes = [] }) {
       color: scope.color,
       text: scope.title,
       url: scope.url,
+      strokeWidth: scope.atRisk ? 4: 0,
+      strokeColor: scope.atRisk ? 'black': 'white',
       classNames: scope.progress.notPlanned ? 'animate-pulse' : ''
     }
   })
@@ -49,7 +51,9 @@ export default function HillChart({ scopes = [] }) {
                 <circle
                   key={index}
                   fill={dot.color}
-                  className={`stroke-white cursor-pointer ${dot.classNames}`}
+                  stroke-width={dot.strokeWidth}
+                  stroke={dot.strokeColor}
+                  className={` cursor-pointer ${dot.classNames}`}
                   r="10"
                   cx={dot.x}
                   cy={dot.y}
