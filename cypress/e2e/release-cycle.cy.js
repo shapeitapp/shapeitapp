@@ -26,7 +26,7 @@ describe('Release cycle', () => {
     it('It contains the history information', () => {
         cy.getByData("history").contains("Task 4")
         cy.getByData("history").contains("50%")
-        cy.getByData("history").contains("Fri Jul 14 2023")
+        cy.getByData("history").contains("Fri Nov 10 2023")
         cy.getByData("history").contains("Updated progress of")
         cy.getByData("history").contains("This is a test")
     })
