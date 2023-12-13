@@ -9,13 +9,7 @@ const statuses = {
   connected: 'text-green-500 bg-green-800/10',
 }
 
-export default function ProjectCard({ project }) {
-  const hasCycleField = project.cycle?.dataType === 'ITERATION' ||  project.cycle?.dataType === 'SINGLE_SELECT'
-  const hasKindField =
-    project.kind?.dataType === 'SINGLE_SELECT' &&
-    ['Pitch', 'Bet'].every(kind => !!project.kind?.options?.find(opt => opt.name === kind))
-  const hasAppetiteField = project.appetite?.dataType === 'SINGLE_SELECT'
-  const isConnected = hasCycleField && hasKindField && hasAppetiteField
+export default function ProjectCard({ project, isConnected }) {
 
   return (
     <li key={project.url} className="relative flex items-center space-x-4 py-4">
