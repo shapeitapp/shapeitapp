@@ -150,7 +150,7 @@ export default async function Projects() {
 
   const allProjects = [userProjects, orgProjects].flat()
   const myProjects = allProjects.filter(isConnected)
-  const remaining = allProjects.filter(x=>!myProjects.includes(x))
+  const remainingProjects = allProjects.filter(x=>!myProjects.includes(x))
 
   return (
     <>
@@ -173,7 +173,7 @@ export default async function Projects() {
             Other projects
           </h2>
           {
-            remaining.map((project) => (
+            remainingProjects.map((project) => (
               <ProjectCard key={project.url} project={project} isConnected={false}/>
             ))
           }
