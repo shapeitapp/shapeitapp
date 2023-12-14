@@ -4,6 +4,7 @@ import { graphql } from "@octokit/graphql"
 import { authOptions, getToken } from '@/app/api/auth/[...nextauth]/route'
 import Head from 'next/head'
 import ProjectCard from '@/components/ProjectCard'
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
 
 export default async function Projects() {
   const session = await getServerSession(authOptions)
@@ -137,7 +138,19 @@ export default async function Projects() {
     return projectsResult;
   }, []).flat();
 
+  const isConnected = (project) => {
+    const hasCycleField = project.cycle?.dataType === 'ITERATION' ||  project.cycle?.dataType === 'SINGLE_SELECT'
+    const hasKindField =
+      project.kind?.dataType === 'SINGLE_SELECT' &&
+      ['Pitch', 'Bet'].every(kind => !!project.kind?.options?.find(opt => opt.name === kind))
+    const hasAppetiteField = project.appetite?.dataType === 'SINGLE_SELECT'
+    const isConnected = hasCycleField && hasKindField && hasAppetiteField
+    return isConnected
+  }
+
   const allProjects = [userProjects, orgProjects].flat()
+  const myProjects = allProjects.filter(isConnected)
+  const remainingProjects = allProjects.filter(x=>!myProjects.includes(x))
 
   return (
     <>
@@ -146,15 +159,22 @@ export default async function Projects() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h2 className="text-4xl leading-10 font-extrabold text-gray-500 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl">
-        Projects
-      </h2>
-
-      <div className="mt-8">
+      <div >
         <ul role="list" className="divide-y divide-black/5">
+          <h2 className="text-4xl leading-10 font-extrabold text-gray-500 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl  mt-8 mb-8">
+            My Projects
+          </h2>
           {
-            allProjects.map((project) => (
-              <ProjectCard key={project.url} project={project} />
+            myProjects.map((project) => (
+              <ProjectCard key={project.url} project={project} isConnected={true} />
+            ))
+          }
+          <h2 className="text-4xl leading-10 font-extrabold text-gray-500 sm:text-5xl sm:leading-none sm:tracking-tight lg:text-6xl  pt-10 mb-8">
+            Other projects
+          </h2>
+          {
+            remainingProjects.map((project) => (
+              <ProjectCard key={project.url} project={project} isConnected={false}/>
             ))
           }
         </ul>
