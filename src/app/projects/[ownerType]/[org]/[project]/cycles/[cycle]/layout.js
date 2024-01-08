@@ -111,6 +111,12 @@ async function prepareData(params) {
                   databaseId,
                   name,
                   configuration {
+                    completedIterations {
+                      id,
+                      startDate,
+                      duration,
+                      title
+                    }
                     iterations {
                       id,
                       startDate,
@@ -245,9 +251,21 @@ async function prepareData(params) {
   
   let cycles = []
 
+
   projectData.fields.nodes.forEach(field => {
     if (field.name === 'Cycle') {
       if (field.__typename === 'ProjectV2IterationField' && field.configuration?.iterations) {
+        field.configuration.completedIterations.forEach(iteration => {
+          const startDate = new Date(iteration.startDate)
+          const endDate = new Date(startDate)
+          endDate.setDate(endDate.getDate() + iteration.duration)
+          cycles.push({
+            ...iteration,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            isShapeUp: true,
+          })
+        })
         field.configuration.iterations.forEach(iteration => {
           const startDate = new Date(iteration.startDate)
           const endDate = new Date(startDate)
@@ -272,7 +290,6 @@ async function prepareData(params) {
       }
     }
   })
-
   const issues = itemsData.map(item => {
     const isPrivate = item?.content?.repository?.isPrivate === undefined
                       || item?.content?.repository?.isPrivate === true
@@ -340,6 +357,7 @@ async function prepareData(params) {
       scopes
     }
   }).filter(Boolean)
+
 
   cycles = cycles.sort((c1, c2) => { // Sort cycles by startDate
     if (c1.isShapeUp)
