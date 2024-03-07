@@ -35,3 +35,5 @@ data.json
 public/rss.xml
 
 cypress/videos/
+
+/.idea
