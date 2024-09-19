@@ -19,7 +19,7 @@ See this [example](https://github.com/asyncapi/studio/issues/748)
 ### Option 2
 
 1. Create a new issue
-2. Add this keywork in the description `related to #ISSUE_BET_NUMBER`
+2. Add this keyword in the description `related to #ISSUE_BET_NUMBER`
 
 See this [example](https://github.com/asyncapi/studio/issues/755)
 
